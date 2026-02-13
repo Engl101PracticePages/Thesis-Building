@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Thesis Pyramid Builder</title>
+  <title>Thesis Pyramid Builder (Game Mode)</title>
   <style>
     :root{
       --bg: #f6f7ff;
@@ -26,7 +26,7 @@
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color:var(--ink);
       background:
         radial-gradient(1200px 600px at 10% 0%, rgba(99,102,241,.18), transparent 55%),
@@ -38,9 +38,8 @@
 
     .wrap{max-width: 980px; margin:0 auto;}
     header{
-      background: rgba(255,255,255,.75);
-      border: 1px solid rgba(219,227,240,.9);
-      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(219,227,240,.95);
       border-radius: var(--radius);
       padding: 18px 18px;
       box-shadow: var(--shadow);
@@ -51,9 +50,7 @@
       letter-spacing: -0.02em;
     }
     .sub{margin:0; color:var(--muted); line-height:1.4}
-    .chips{
-      display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;
-    }
+    .chips{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
     .chip{
       font-size: 13px;
       padding: 8px 10px;
@@ -86,22 +83,10 @@
       gap:12px;
       margin-bottom:10px;
     }
-    .stepTitle h2{
-      margin:0;
-      font-size: 18px;
-      letter-spacing: -.01em;
-    }
-    .tiny{
-      font-size: 12px;
-      color: var(--muted);
-    }
+    .stepTitle h2{margin:0; font-size: 18px; letter-spacing: -.01em;}
+    .tiny{font-size: 12px; color: var(--muted);}
 
-    label{
-      display:block;
-      font-weight: 700;
-      margin: 10px 0 6px;
-      font-size: 14px;
-    }
+    label{display:block; font-weight: 800; margin: 10px 0 6px; font-size: 14px;}
     input[type="text"], textarea{
       width:100%;
       border: 1px solid var(--border);
@@ -118,6 +103,7 @@
     }
 
     .row{display:flex; gap:10px; flex-wrap:wrap;}
+
     .btn{
       appearance:none;
       border: 1px solid var(--border);
@@ -126,9 +112,9 @@
       padding: 10px 12px;
       border-radius: 999px;
       cursor:pointer;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 14px;
-      transition: transform .06s ease, box-shadow .2s ease;
+      transition: transform .06s ease, box-shadow .2s ease, opacity .2s ease;
       user-select:none;
     }
     .btn:hover{box-shadow: 0 8px 22px rgba(15,23,42,.10); transform: translateY(-1px);}
@@ -138,8 +124,11 @@
       background: linear-gradient(90deg, rgba(99,102,241,1), rgba(6,182,212,1));
       color: #fff;
     }
-    .btn.ghost{
-      background: transparent;
+    .btn:disabled{
+      cursor:not-allowed;
+      opacity:.45;
+      transform:none;
+      box-shadow:none;
     }
 
     .hint{
@@ -147,18 +136,34 @@
       padding: 12px;
       border-radius: 14px;
       border:1px dashed rgba(71,85,105,.35);
-      background: rgba(255,255,255,.7);
+      background: rgba(255,255,255,.75);
       color: var(--muted);
       font-size: 14px;
       line-height:1.35;
     }
 
-    /* Pyramid visual */
-    .pyramid{
-      display:grid;
-      gap: 10px;
-      margin-top: 8px;
+    /* Locked sections */
+    .locked{
+      opacity: .55;
+      filter: grayscale(.15);
+      position: relative;
     }
+    .locked input, .locked textarea, .locked button{
+      pointer-events:none;
+    }
+    .lockBanner{
+      margin: 10px 0 0;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(239,68,68,.25);
+      background: rgba(239,68,68,.10);
+      color: #7f1d1d;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    /* Pyramid visual */
+    .pyramid{display:grid; gap: 10px; margin-top: 8px;}
     .layer{
       border-radius: 16px;
       padding: 12px;
@@ -199,10 +204,10 @@
     .flag{
       padding: 6px 10px;
       border-radius: 999px;
-      font-weight: 800;
+      font-weight: 900;
       font-size: 12px;
       border: 1px solid rgba(219,227,240,.95);
-      background: rgba(255,255,255,.9);
+      background: rgba(255,255,255,.95);
       color: var(--muted);
       white-space: nowrap;
     }
@@ -225,12 +230,15 @@
       line-height:1.35;
     }
 
-    .smallNote{
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height:1.35;
+    details{
+      border:1px solid rgba(219,227,240,.95);
+      background: rgba(255,255,255,.85);
+      border-radius: 16px;
+      padding: 10px 12px;
+      margin-top: 10px;
     }
+    summary{cursor:pointer; font-weight: 900; color: var(--ink);}
+    details p{color: var(--muted); margin: 10px 0 0; line-height:1.35}
 
     .toast{
       position: fixed;
@@ -248,14 +256,424 @@
       transition: opacity .2s ease, transform .2s ease;
     }
     .toast.show{opacity:1; transform: translateX(-50%) translateY(-4px);}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Thesis Pyramid Builder (Game Mode)</h1>
+      <p class="sub">
+        Build your thesis in 3 parts. You <b>unlock</b> each step by finishing the one above it.
+      </p>
+      <div class="chips">
+        <div class="chip"><b>WHAT</b> = topic + focus</div>
+        <div class="chip"><b>HOW</b> = what your essay will do</div>
+        <div class="chip"><b>WHY</b> = the purpose (why it matters)</div>
+        <div class="chip">Tip: avoid “things / stuff”</div>
+      </div>
+    </header>
 
-    .examples{
-      display:grid;
-      gap: 10px;
-      margin-top: 10px;
+    <div class="grid">
+      <!-- LEFT -->
+      <section class="card" aria-label="Builder">
+        <div class="stepTitle">
+          <h2>Step 1: Pick your topic</h2>
+          <span class="tiny">Auto-saves</span>
+        </div>
+
+        <label for="topic">What is your career goal?</label>
+        <input id="topic" type="text" placeholder="Example: EMT, dental hygienist, teacher, electrician…" />
+
+        <div class="hint">
+          This thesis is an <b>overview</b> (informational). Avoid “prove / argue / convince.”
+        </div>
+
+        <!-- WHAT -->
+        <div class="stepTitle" style="margin-top:14px;">
+          <h2>Step 2: WHAT (unlock 2)</h2>
+          <span class="tiny">Be specific</span>
+        </div>
+
+        <label for="what">WHAT: This essay will…</label>
+        <textarea id="what" placeholder="Example: provide an overview of the path to becoming an EMT"></textarea>
+
+        <!-- HOW (Locked until WHAT) -->
+        <div id="howSectionWrap">
+          <div class="stepTitle" style="margin-top:14px;">
+            <h2>Step 3: HOW (unlock 3)</h2>
+            <span class="tiny">Choose a starter</span>
+          </div>
+
+          <div id="howSection" class="locked">
+            <label>HOW: by… (click a starter, then add details)</label>
+            <div class="row" id="howButtons"></div>
+            <textarea id="how" placeholder="Example: by describing education requirements, licensing steps, and job expectations"></textarea>
+
+            <div class="lockBanner" id="howLockMsg">Locked: finish WHAT first.</div>
+          </div>
+        </div>
+
+        <!-- WHY (Locked until HOW) -->
+        <div id="whySectionWrap">
+          <div class="stepTitle" style="margin-top:14px;">
+            <h2>Step 4: WHY (finish)</h2>
+            <span class="tiny">Purpose</span>
+          </div>
+
+          <div id="whySection" class="locked">
+            <label for="why">WHY: to / so that / for the purpose of…</label>
+            <textarea id="why" placeholder="Example: so that a student understands what to do next after an AA/transfer program"></textarea>
+
+            <div class="lockBanner" id="whyLockMsg">Locked: finish HOW first.</div>
+          </div>
+        </div>
+
+        <!-- Final -->
+        <div class="stepTitle" style="margin-top:14px;">
+          <h2>Final: Your full thesis sentence</h2>
+          <span class="tiny">Live preview</span>
+        </div>
+
+        <div class="finalBox" role="region" aria-label="Final thesis preview">
+          <pre id="thesisPreview">Start typing above…</pre>
+        </div>
+
+        <div class="row" style="margin-top:10px;">
+          <button class="btn primary" id="copyBtn" disabled>Copy for Canvas (locked)</button>
+          <button class="btn" id="resetBtn" title="Clears your answers">Reset</button>
+        </div>
+
+        <details>
+          <summary>Need an example?</summary>
+          <p>
+            <b>Example thesis:</b> This essay will provide an overview of the path to becoming an EMT,
+            by describing education requirements, state licensing steps, and current job expectations,
+            so that a student can understand what they need to do after an AA/transfer program to qualify for entry-level jobs.
+          </p>
+          <button class="btn" id="loadExample" style="margin-top:10px;">Load this example</button>
+        </details>
+      </section>
+
+      <!-- RIGHT -->
+      <aside class="card" aria-label="Pyramid and feedback">
+        <div class="stepTitle">
+          <h2>Your Thesis Pyramid</h2>
+          <span class="tiny">Stacks together</span>
+        </div>
+
+        <div class="pyramid" aria-label="Pyramid layers">
+          <div class="layer what">
+            <strong>WHAT</strong>
+            <p id="whatOut">This essay will ________.</p>
+          </div>
+          <div class="layer how">
+            <strong>HOW</strong>
+            <p id="howOut">by ______________________________.</p>
+          </div>
+          <div class="layer why">
+            <strong>WHY</strong>
+            <p id="whyOut">to / so that / for the purpose of ______________________________.</p>
+          </div>
+        </div>
+
+        <div class="meter" aria-label="Progress meter">
+          <div class="status">
+            <div>
+              <b>Progress</b><br>
+              <span id="meterText">Start with your career goal + WHAT.</span>
+            </div>
+            <span class="flag" id="flag">0 / 3 done</span>
+          </div>
+          <div class="bar" aria-hidden="true">
+            <div class="fill" id="fill"></div>
+          </div>
+
+          <div class="hint" id="warnings" style="margin-top:12px;">
+            <b>Game rules:</b><br>
+            1) Fill WHAT → unlock HOW<br>
+            2) Fill HOW → unlock WHY<br>
+            3) Fill WHY → unlock Copy
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Copied!</div>
+
+  <script>
+    // ----- SAFE + SIMPLE JS (Safari-friendly) -----
+    var HOW_STARTERS = [
+      "by outlining",
+      "by describing",
+      "by explaining",
+      "by providing an overview of",
+      "by comparing",
+      "by examining",
+      "by researching"
+    ];
+
+    var VAGUE_WORDS = ["things","stuff","a lot","lots","many","good","bad","nice","interesting","various","different","some"];
+    var ARGUMENT_VERBS = ["prove","argue","convince","debate","fight","win"];
+
+    var topicEl = document.getElementById("topic");
+    var whatEl  = document.getElementById("what");
+    var howEl   = document.getElementById("how");
+    var whyEl   = document.getElementById("why");
+
+    var whatOut = document.getElementById("whatOut");
+    var howOut  = document.getElementById("howOut");
+    var whyOut  = document.getElementById("whyOut");
+
+    var preview = document.getElementById("thesisPreview");
+    var fill    = document.getElementById("fill");
+    var meterText = document.getElementById("meterText");
+    var flag = document.getElementById("flag");
+    var warningsBox = document.getElementById("warnings");
+
+    var howSection = document.getElementById("howSection");
+    var whySection = document.getElementById("whySection");
+    var howLockMsg = document.getElementById("howLockMsg");
+    var whyLockMsg = document.getElementById("whyLockMsg");
+
+    var copyBtn = document.getElementById("copyBtn");
+    var toast = document.getElementById("toast");
+
+    // Build HOW buttons
+    var howButtonsWrap = document.getElementById("howButtons");
+    HOW_STARTERS.forEach(function(starter){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn";
+      b.textContent = starter;
+      b.addEventListener("click", function(){
+        var current = (howEl.value || "").trim();
+        if(!current){
+          howEl.value = starter + " ";
+        }else{
+          howEl.value = starter + " " + current.replace(/^by\s+\w+\s*/i, "").trim();
+        }
+        howEl.focus();
+        updateAll();
+        saveAll();
+      });
+      howButtonsWrap.appendChild(b);
+    });
+
+    function cleanSentence(s){
+      return (s || "").replace(/\s+/g, " ").replace(/\s+,/g, ",").trim();
     }
-    details{
-      border:1px solid rgba(219,227,240,.95);
-      background: rgba(255,255,255,.85);
-      border-radius: 16px;
-      padding: 10px 12
+    function hasText(s){ return (s || "").trim().length > 0; }
+
+    function buildThesis(what, how, why){
+      if(!hasText(what) && !hasText(how) && !hasText(why)) return "Start typing above…";
+
+      var w = cleanSentence(what);
+      var h = cleanSentence(how);
+      var y = cleanSentence(why);
+
+      if(w && !/^this essay will/i.test(w)) w = "This essay will " + w;
+      if(h && !/^by\s/i.test(h)) h = "by " + h;
+
+      var parts = [];
+      if(w) parts.push(w.replace(/\.*$/,""));
+      if(h) parts.push(h.replace(/\.*$/,""));
+      if(y) parts.push(y.replace(/\.*$/,""));
+
+      if(parts.length === 1) return parts[0] + ".";
+      if(parts.length === 2) return parts[0] + ", " + parts[1] + ".";
+      return parts[0] + ", " + parts[1] + ", " + parts[2] + ".";
+    }
+
+    function findHits(list, text){
+      var t = (text || "").toLowerCase();
+      return list.filter(function(w){ return t.indexOf(w) !== -1; });
+    }
+
+    function showToast(text){
+      toast.textContent = text;
+      toast.classList.add("show");
+      setTimeout(function(){ toast.classList.remove("show"); }, 1200);
+    }
+
+    // Game locks
+    function setLocked(el, locked){
+      if(locked) el.classList.add("locked");
+      else el.classList.remove("locked");
+    }
+
+    function updateGameLocks(){
+      var whatDone = hasText(whatEl.value);
+      var howDone  = hasText(howEl.value);
+      var whyDone  = hasText(whyEl.value);
+
+      setLocked(howSection, !whatDone);
+      howLockMsg.style.display = whatDone ? "none" : "block";
+
+      setLocked(whySection, !(whatDone && howDone));
+      whyLockMsg.style.display = (whatDone && howDone) ? "none" : "block";
+
+      copyBtn.disabled = !(whatDone && howDone && whyDone);
+      copyBtn.textContent = copyBtn.disabled ? "Copy for Canvas (locked)" : "Copy for Canvas";
+    }
+
+    function updateProgress(){
+      var done = 0;
+      if(hasText(whatEl.value)) done++;
+      if(hasText(howEl.value)) done++;
+      if(hasText(whyEl.value)) done++;
+
+      var pct = Math.round((done/3) * 100);
+      fill.style.width = pct + "%";
+      flag.textContent = done + " / 3 done";
+
+      if(done === 0) meterText.textContent = "Start with WHAT.";
+      if(done === 1) meterText.textContent = "Nice. HOW is unlocked.";
+      if(done === 2) meterText.textContent = "Nice. WHY is unlocked.";
+      if(done === 3) meterText.textContent = "Done. Copy is unlocked.";
+    }
+
+    function updateChecks(){
+      var combined = [topicEl.value, whatEl.value, howEl.value, whyEl.value].join(" ");
+      var vague = findHits(VAGUE_WORDS, combined);
+      var argy  = findHits(ARGUMENT_VERBS, combined);
+
+      var tips = [];
+      if(vague.length){
+        tips.push("Try replacing vague words: <b>" + Array.from(new Set(vague)).slice(0,6).join(", ") + "</b>.");
+      }
+      if(argy.length){
+        tips.push("Avoid argument words: <b>" + Array.from(new Set(argy)).join(", ") + "</b>. Use overview verbs (describe, explain, examine).");
+      }
+
+      if(!tips.length){
+        warningsBox.innerHTML = "<b>Quick checks:</b><br>• Specific details (2–3 parts)?<br>• Overview verbs?<br>• WHY explains purpose?";
+      }else{
+        warningsBox.innerHTML = "<b>Quick checks:</b><br>• " + tips.join("<br>• ");
+      }
+    }
+
+    function updateAll(){
+      // Pyramid outputs
+      if(hasText(whatEl.value)){
+        var w = whatEl.value.trim();
+        whatOut.textContent = (/^this essay will/i.test(w)) ? w : ("This essay will " + w);
+      }else{
+        whatOut.textContent = "This essay will ________.";
+      }
+
+      if(hasText(howEl.value)){
+        var h = howEl.value.trim();
+        howOut.textContent = (/^by\s/i.test(h)) ? h : ("by " + h);
+      }else{
+        howOut.textContent = "by ______________________________.";
+      }
+
+      whyOut.textContent = hasText(whyEl.value) ? whyEl.value.trim() : "to / so that / for the purpose of ______________________________.";
+
+      // Thesis preview
+      preview.textContent = buildThesis(whatEl.value, howEl.value, whyEl.value);
+
+      updateGameLocks();
+      updateProgress();
+      updateChecks();
+    }
+
+    function saveAll(){
+      try{
+        var data = { topic: topicEl.value, what: whatEl.value, how: howEl.value, why: whyEl.value };
+        localStorage.setItem("thesisPyramid_game_v1", JSON.stringify(data));
+      }catch(e){}
+    }
+
+    function loadAll(){
+      try{
+        var saved = localStorage.getItem("thesisPyramid_game_v1");
+        if(!saved) return;
+        var data = JSON.parse(saved);
+        topicEl.value = data.topic || "";
+        whatEl.value  = data.what  || "";
+        howEl.value   = data.how   || "";
+        whyEl.value   = data.why   || "";
+      }catch(e){}
+    }
+
+    // Copy (Safari-safe)
+    function copyText(text){
+      // Try modern clipboard first
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(function(){
+          showToast("Copied for Canvas!");
+        }).catch(function(){
+          fallbackCopy(text);
+        });
+      }else{
+        fallbackCopy(text);
+      }
+    }
+
+    function fallbackCopy(text){
+      var temp = document.createElement("textarea");
+      temp.value = text;
+      document.body.appendChild(temp);
+      temp.select();
+      try{
+        document.execCommand("copy");
+        showToast("Copied!");
+      }catch(e){
+        showToast("Copy failed — select & copy manually");
+      }
+      temp.remove();
+    }
+
+    copyBtn.addEventListener("click", function(){
+      var topic = cleanSentence(topicEl.value) || "(no topic entered)";
+      var w = cleanSentence(whatEl.value) || "________";
+      var h = cleanSentence(howEl.value)  || "__________________________";
+      var y = cleanSentence(whyEl.value)  || "__________________________";
+      var thesis = buildThesis(whatEl.value, howEl.value, whyEl.value);
+
+      var text =
+"Thesis Statement Practice\n\n" +
+"Topic (career goal): " + topic + "\n\n" +
+"WHAT: " + (/^this essay will/i.test(w) ? w : ("This essay will " + w)) + ".\n" +
+"HOW: "  + (/^by\\s/i.test(h) ? h : ("by " + h)) + ".\n" +
+"WHY: "  + y + "\n\n" +
+"Full thesis sentence:\n" + thesis;
+
+      copyText(text);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function(){
+      topicEl.value = "";
+      whatEl.value = "";
+      howEl.value = "";
+      whyEl.value = "";
+      try{ localStorage.removeItem("thesisPyramid_game_v1"); }catch(e){}
+      updateAll();
+      showToast("Reset");
+    });
+
+    document.getElementById("loadExample").addEventListener("click", function(){
+      topicEl.value = "EMT / paramedic";
+      whatEl.value = "provide an overview of the path to becoming an EMT";
+      howEl.value = "by describing education requirements, state licensing steps, and current job expectations";
+      whyEl.value = "so that a student can understand what they need to do after an AA/transfer program to qualify for entry-level jobs";
+      updateAll();
+      saveAll();
+      showToast("Example loaded");
+    });
+
+    [topicEl, whatEl, howEl, whyEl].forEach(function(el){
+      el.addEventListener("input", function(){
+        updateAll();
+        saveAll();
+      });
+    });
+
+    // Init
+    loadAll();
+    updateAll();
+  </script>
+</body>
+</html>
