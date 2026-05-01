@@ -26,6 +26,26 @@
       --radius:28px;
     }
 
+    html[data-theme="dark"]{
+      --bg:#1c141b;
+      --paper:#241821;
+      --ink:#fff7ef;
+      --muted:#d9c7d1;
+      --border:#5f4357;
+      --plum:#e7b8dc;
+      --plum-dark:#fff1fa;
+      --plum-soft:#3b2637;
+      --clay:#e4a37f;
+      --clay-soft:#3a2721;
+      --sage:#b9c9ad;
+      --sage-soft:#293327;
+      --cream:#2a1e27;
+      --warn:#ffb3a7;
+      --warn-soft:#45231f;
+      --shadow:0 22px 60px rgba(0,0,0,.34);
+      --small-shadow:0 12px 28px rgba(0,0,0,.26);
+    }
+
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
 
@@ -40,11 +60,43 @@
       padding:0 18px 72px;
       font-size:19px;
       line-height:1.55;
+      transition:background .25s ease, color .25s ease;
+    }
+
+    html[data-theme="dark"] body{
+      background:
+        radial-gradient(900px 460px at 10% -10%, rgba(231,184,220,.14), transparent 60%),
+        radial-gradient(760px 440px at 90% 8%, rgba(228,163,127,.11), transparent 58%),
+        linear-gradient(180deg, #171018 0%, var(--bg) 54%, #211720 100%);
     }
 
     .skip-link{position:absolute; left:-999px; top:12px; background:var(--ink); color:#fff; padding:10px 14px; border-radius:999px; z-index:20;}
     .skip-link:focus{left:16px}
     .wrap{max-width:1120px; margin:0 auto;}
+
+    .topbar{
+      display:flex;
+      justify-content:flex-end;
+      align-items:center;
+      gap:10px;
+      padding:18px 0 0;
+    }
+
+    .theme-toggle{
+      appearance:none;
+      border:1px solid var(--border);
+      background:rgba(255,253,248,.82);
+      color:var(--ink);
+      border-radius:999px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-weight:900;
+      font-size:.9rem;
+      box-shadow:var(--small-shadow);
+    }
+
+    html[data-theme="dark"] .theme-toggle{background:rgba(36,24,33,.86);} 
+    .theme-toggle:focus-visible{outline:4px solid rgba(91,35,78,.22); outline-offset:3px;}
 
     .hero{
       margin:26px 0 30px;
@@ -411,6 +463,7 @@
     .toast.show{opacity:1; transform:translateX(-50%) translateY(-4px);}
 
     @media print{
+      html[data-theme="dark"], html[data-theme="dark"] body{background:#fff !important; color:#000 !important;}
       body{background:#fff; padding:0; color:#000;}
       .hero, .builder, .side-card, .toast, .no-print{display:none !important;}
       .wrap{max-width:none; margin:0;}
@@ -426,6 +479,9 @@
   <a class="skip-link" href="#builder">Skip to thesis builder</a>
 
   <div class="wrap">
+    <div class="topbar no-print">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false">Dark mode</button>
+    </div>
     <header class="hero">
       <p class="eyebrow">ENG 101 Practice Page</p>
       <h1>Thesis Statement Builder</h1>
@@ -619,6 +675,32 @@
   <div class="toast" id="toast">Copied!</div>
 
   <script>
+    var themeToggle = document.getElementById("themeToggle");
+
+    function applyTheme(theme){
+      document.documentElement.setAttribute("data-theme", theme);
+      themeToggle.textContent = theme === "dark" ? "Light mode" : "Dark mode";
+      themeToggle.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+    }
+
+    function getPreferredTheme(){
+      try{
+        var saved = localStorage.getItem("thesisBuilder_theme");
+        if(saved === "light" || saved === "dark") return saved;
+      }catch(e){}
+      if(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) return "dark";
+      return "light";
+    }
+
+    applyTheme(getPreferredTheme());
+
+    themeToggle.addEventListener("click", function(){
+      var current = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+      var next = current === "dark" ? "light" : "dark";
+      applyTheme(next);
+      try{localStorage.setItem("thesisBuilder_theme", next);}catch(e){}
+    });
+
     var HOW_STARTERS = ["outlining", "describing", "explaining", "comparing", "examining"];
     var VAGUE_WORDS = ["things", "stuff", "a lot", "lots", "many", "good", "bad", "nice", "interesting", "various", "different", "some"];
     var ARGUMENT_VERBS = ["prove", "argue", "convince", "debate", "fight", "win"];
