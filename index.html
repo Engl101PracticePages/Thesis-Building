@@ -2,672 +2,1054 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Thesis Pyramid Builder </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Thesis Statement Builder</title>
   <style>
     :root{
-      --bg: #f6f7ff;
-      --card: #ffffff;
-      --ink: #0f172a;
-      --muted: #475569;
-      --border: #dbe3f0;
-
-      --what: #6366f1;   /* indigo */
-      --how:  #06b6d4;   /* teal */
-      --why:  #f59e0b;   /* amber */
-
-      --good: #22c55e;
-      --warn: #ef4444;
-
-      --shadow: 0 10px 30px rgba(15, 23, 42, .10);
-      --radius: 18px;
+      --bg:#f7efe9;
+      --paper:#fffaf4;
+      --ink:#241821;
+      --muted:#6b5b65;
+      --border:#dbc7d2;
+      --plum:#5b234e;
+      --plum-dark:#3a1834;
+      --plum-soft:#f0dfea;
+      --clay:#9b5b3e;
+      --clay-soft:#f5e4d7;
+      --sage:#687864;
+      --sage-soft:#e7eadf;
+      --cream:#fffdf8;
+      --warn:#8a2f24;
+      --warn-soft:#f8ded8;
+      --shadow:0 22px 60px rgba(65, 33, 55, .16);
+      --small-shadow:0 12px 28px rgba(65, 33, 55, .10);
+      --radius:28px;
     }
 
     *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      font-family:ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       color:var(--ink);
       background:
-        radial-gradient(1200px 600px at 10% 0%, rgba(99,102,241,.18), transparent 55%),
-        radial-gradient(900px 500px at 90% 10%, rgba(6,182,212,.18), transparent 60%),
-        radial-gradient(900px 600px at 50% 110%, rgba(245,158,11,.18), transparent 55%),
-        var(--bg);
-      padding: 24px 14px 64px;
+        radial-gradient(900px 460px at 10% -10%, rgba(91,35,78,.22), transparent 60%),
+        radial-gradient(760px 440px at 90% 8%, rgba(155,91,62,.16), transparent 58%),
+        linear-gradient(180deg, #fbf4ee 0%, var(--bg) 54%, #f3e5dc 100%);
+      padding:0 18px 72px;
+      font-size:19px;
+      line-height:1.55;
     }
 
-    .wrap{max-width: 980px; margin:0 auto;}
-    header{
-      background: rgba(255,255,255,.92);
-      border: 1px solid rgba(219,227,240,.95);
-      border-radius: var(--radius);
-      padding: 18px 18px;
-      box-shadow: var(--shadow);
+    .skip-link{position:absolute; left:-999px; top:12px; background:var(--ink); color:#fff; padding:10px 14px; border-radius:999px; z-index:20;}
+    .skip-link:focus{left:16px}
+    .wrap{max-width:1120px; margin:0 auto;}
+
+    .hero{
+      margin:26px 0 30px;
+      padding:clamp(28px, 6vw, 64px);
+      border-radius:36px;
+      border:1px solid rgba(219,199,210,.96);
+      background:linear-gradient(135deg, rgba(255,250,244,.97), rgba(244,230,238,.95));
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
     }
+
+    .hero:before{
+      content:"";
+      position:absolute;
+      right:-110px;
+      top:-120px;
+      width:340px;
+      height:340px;
+      border-radius:999px;
+      background:rgba(91,35,78,.12);
+    }
+
+    .eyebrow{
+      margin:0 0 14px;
+      color:var(--plum);
+      font-size:.82rem;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      font-weight:900;
+      position:relative;
+      z-index:1;
+    }
+
     h1{
-      margin: 0 0 6px;
-      font-size: clamp(22px, 3vw, 32px);
-      letter-spacing: -0.02em;
-    }
-    .sub{margin:0; color:var(--muted); line-height:1.4}
-    .chips{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
-    .chip{
-      font-size: 13px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      border:1px solid var(--border);
-      background:#fff;
-      color:var(--muted);
+      margin:0;
+      max-width:820px;
+      font-family:Georgia, "Times New Roman", serif;
+      font-size:clamp(3.1rem, 8vw, 6.8rem);
+      line-height:.9;
+      letter-spacing:-.07em;
+      font-weight:750;
+      color:var(--plum-dark);
+      position:relative;
+      z-index:1;
     }
 
-    .grid{
+    .sub{
+      max-width:760px;
+      margin:24px 0 0;
+      color:var(--muted);
+      font-size:1.15rem;
+      position:relative;
+      z-index:1;
+    }
+
+    .frame-strip{
       display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 16px;
-      margin-top: 16px;
+      grid-template-columns:repeat(3, 1fr);
+      gap:12px;
+      margin-top:28px;
+      position:relative;
+      z-index:1;
     }
-    @media (max-width: 900px){
-      .grid{grid-template-columns: 1fr;}
+
+    @media (max-width:760px){.frame-strip{grid-template-columns:1fr;}}
+
+    .frame-chip{
+      background:rgba(255,253,248,.72);
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:16px;
+      min-height:110px;
     }
+
+    .frame-chip strong{
+      display:block;
+      font-family:Georgia, "Times New Roman", serif;
+      font-size:1.7rem;
+      line-height:1;
+      color:var(--plum-dark);
+      margin-bottom:8px;
+    }
+
+    .frame-chip span{display:block; color:var(--muted); font-size:.95rem; line-height:1.35;}
+
+    main.layout{
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) 340px;
+      gap:24px;
+      align-items:start;
+    }
+
+    @media (max-width:980px){main.layout{grid-template-columns:1fr;}}
 
     .card{
-      background: rgba(255,255,255,.92);
-      border: 1px solid rgba(219,227,240,.95);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 16px;
+      background:rgba(255,250,244,.95);
+      border:1px solid rgba(219,199,210,.96);
+      border-radius:var(--radius);
+      box-shadow:var(--small-shadow);
+      padding:clamp(22px, 4vw, 36px);
     }
 
-    .stepTitle{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:12px;
-      margin-bottom:10px;
-    }
-    .stepTitle h2{margin:0; font-size: 18px; letter-spacing: -.01em;}
-    .tiny{font-size: 12px; color: var(--muted);}
+    .builder{display:grid; gap:34px;}
 
-    label{display:block; font-weight: 800; margin: 10px 0 6px; font-size: 14px;}
+    .step-card{
+      background:rgba(255,253,248,.9);
+      border:1px solid rgba(219,199,210,.96);
+      border-radius:30px;
+      padding:clamp(22px, 4vw, 36px);
+      box-shadow:var(--small-shadow);
+    }
+
+    .step-card.locked{opacity:.58; filter:saturate(.72);}
+    .step-card.locked input, .step-card.locked textarea, .step-card.locked button{pointer-events:none;}
+    .step-card.revision-needed{border-color:rgba(138,47,36,.45); box-shadow:0 0 0 4px rgba(138,47,36,.08), var(--small-shadow);}
+
+    .step-kicker{
+      margin:0 0 8px;
+      color:var(--plum);
+      font-size:.82rem;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      font-weight:900;
+    }
+
+    h2{
+      margin:0;
+      font-family:Georgia, "Times New Roman", serif;
+      font-size:clamp(2.3rem, 5vw, 4.2rem);
+      line-height:.95;
+      letter-spacing:-.055em;
+      color:var(--plum-dark);
+    }
+
+    h3{
+      margin:0;
+      font-family:Georgia, "Times New Roman", serif;
+      font-size:clamp(1.55rem, 3vw, 2.3rem);
+      line-height:1;
+      letter-spacing:-.035em;
+      color:var(--plum-dark);
+    }
+
+    .plain-help{margin:14px 0 0; color:var(--muted); font-size:1rem; max-width:760px;}
+
+    .mini-example{
+      margin:22px 0;
+      border-radius:24px;
+      border:1px solid rgba(91,35,78,.18);
+      background:linear-gradient(135deg, var(--plum-soft), #fffaf4 72%);
+      padding:18px;
+    }
+
+    .mini-example .label{
+      display:block;
+      margin:0 0 8px;
+      color:var(--plum);
+      font-size:.78rem;
+      text-transform:uppercase;
+      letter-spacing:.13em;
+      font-weight:900;
+    }
+
+    .example-text{
+      user-select:none;
+      margin:0;
+      color:var(--ink);
+      font-size:1.08rem;
+      line-height:1.38;
+    }
+
+    .do-not-copy{
+      display:inline-block;
+      margin-top:12px;
+      color:#672117;
+      background:var(--warn-soft);
+      border:1px solid rgba(138,47,36,.22);
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:.78rem;
+      font-weight:900;
+    }
+
+    label{
+      display:block;
+      font-weight:900;
+      margin:0 0 10px;
+      font-size:1.02rem;
+      color:var(--ink);
+    }
+
+    .input-help{margin:0 0 12px; color:var(--muted); font-size:.95rem;}
+
+    .framed-input{
+      border:1px solid var(--border);
+      border-radius:24px;
+      background:#fffefa;
+      overflow:hidden;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
+    }
+
+    .frame-prefix{
+      display:block;
+      padding:12px 16px;
+      background:var(--plum-soft);
+      color:var(--plum-dark);
+      font-family:Georgia, "Times New Roman", serif;
+      font-size:1.45rem;
+      line-height:1;
+      font-weight:750;
+      border-bottom:1px solid var(--border);
+    }
+
+    .framed-input textarea{
+      border:0;
+      border-radius:0;
+      box-shadow:none;
+      background:#fffefa;
+    }
+
+    .framed-input:focus-within{
+      outline:4px solid rgba(91,35,78,.18);
+      outline-offset:3px;
+      border-color:rgba(91,35,78,.65);
+    }
+
     input[type="text"], textarea{
       width:100%;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px 12px;
-      font-size: 15px;
-      outline: none;
-      background:#fff;
-    }
-    textarea{min-height: 84px; resize: vertical;}
-    input:focus, textarea:focus{
-      border-color: rgba(99,102,241,.6);
-      box-shadow: 0 0 0 4px rgba(99,102,241,.12);
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:16px 17px;
+      font:inherit;
+      font-size:1.04rem;
+      outline:none;
+      color:var(--ink);
+      background:#fffefa;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
     }
 
-    .row{display:flex; gap:10px; flex-wrap:wrap;}
+    textarea{min-height:122px; resize:vertical;}
+    textarea.small-textarea{min-height:82px;}
+    .choice-panel{display:grid; gap:22px; margin-top:22px;}
+    .choice-box{border:1px solid rgba(219,199,210,.96); background:rgba(255,253,248,.72); border-radius:28px; padding:22px;}
+    .choice-box h3{font-size:clamp(1.45rem, 3vw, 2.2rem); margin-bottom:10px;}
+    .choice-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;}
+    .use-choice{border-color:var(--plum); background:var(--plum-soft); color:var(--plum-dark);}
+    .use-choice.active{background:linear-gradient(135deg, var(--plum), var(--plum-dark)); color:#fff; border-color:var(--plum-dark);}
+    .selected-note{display:none; margin-top:10px; color:var(--plum); font-weight:900; font-size:.88rem;}
+    .selected-note.show{display:block;}
+    .try-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:16px 0;}
+    @media (max-width:760px){.try-grid{grid-template-columns:1fr;}}
+    .try-card{border:1px solid rgba(219,199,210,.96); background:#fffefa; border-radius:22px; padding:16px;}
+    .try-card strong{display:block; color:var(--plum-dark); font-family:Georgia, "Times New Roman", serif; font-size:1.35rem; line-height:1; margin-bottom:8px;}
+    .try-card p{margin:0 0 12px; color:var(--muted); font-size:.95rem;}
+    .verb-bank{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 14px;}
+    .verb-chip{border:1px solid var(--border); background:var(--plum-soft); color:var(--plum-dark); border-radius:999px; padding:6px 10px; font-size:.86rem; font-weight:900;}
+    .reflect-box{border:1px dashed rgba(91,35,78,.28); background:rgba(240,223,234,.44); border-radius:22px; padding:16px; margin-top:18px;}
+    .reflect-box p{margin:0 0 10px; color:var(--muted); font-size:.95rem;}
+    input:focus, textarea:focus, button:focus-visible{outline:4px solid rgba(91,35,78,.18); outline-offset:3px; border-color:rgba(91,35,78,.65);}
+    .field-error{border-color:rgba(138,47,36,.8) !important; background:#fff7f5 !important;}
 
+    .starter-buttons{display:flex; gap:10px; flex-wrap:wrap; margin:0 0 14px;}
+    .btn.trick{border-color:rgba(138,47,36,.35); background:var(--warn-soft); color:#672117;}
+    .big-warning{
+      display:none;
+      margin:18px 0 0;
+      border-radius:26px;
+      border:2px solid rgba(138,47,36,.38);
+      background:linear-gradient(135deg, #f8ded8, #fff7f5);
+      color:#672117;
+      padding:22px;
+      box-shadow:0 18px 34px rgba(138,47,36,.13);
+    }
+    .big-warning.show{display:block;}
+    .big-warning strong{
+      display:block;
+      font-family:Georgia, "Times New Roman", serif;
+      font-size:clamp(2rem, 5vw, 4rem);
+      line-height:.9;
+      letter-spacing:-.055em;
+      margin-bottom:10px;
+    }
+    .big-warning p{margin:0; font-size:1rem; line-height:1.42;}
+    .starter-lesson{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin:14px 0 16px;
+    }
+    @media (max-width:680px){.starter-lesson{grid-template-columns:1fr;}}
+    .starter-card{
+      border:1px solid var(--border);
+      border-radius:20px;
+      background:#fffefa;
+      padding:14px;
+    }
+    .starter-card.wrong{border-color:rgba(138,47,36,.32); background:var(--warn-soft); color:#672117;}
+    .starter-card.right{border-color:rgba(91,35,78,.25); background:var(--plum-soft); color:var(--plum-dark);}
+    .starter-card span{display:block; font-size:.76rem; letter-spacing:.11em; text-transform:uppercase; font-weight:900; margin-bottom:6px;}
+    .starter-card strong{display:block; font-family:Georgia, "Times New Roman", serif; font-size:1.45rem; line-height:1;}
     .btn{
       appearance:none;
-      border: 1px solid var(--border);
-      background: #fff;
-      color: var(--ink);
-      padding: 10px 12px;
-      border-radius: 999px;
+      border:1px solid var(--border);
+      background:#fffefa;
+      color:var(--ink);
+      padding:11px 15px;
+      border-radius:999px;
       cursor:pointer;
-      font-weight: 800;
-      font-size: 14px;
-      transition: transform .06s ease, box-shadow .2s ease, opacity .2s ease;
-      user-select:none;
+      font-weight:900;
+      font-size:.92rem;
+      transition:transform .08s ease, box-shadow .18s ease;
     }
-    .btn:hover{box-shadow: 0 8px 22px rgba(15,23,42,.10); transform: translateY(-1px);}
-    .btn:active{transform: translateY(0px);}
-    .btn.primary{
-      border: none;
-      background: linear-gradient(90deg, rgba(99,102,241,1), rgba(6,182,212,1));
-      color: #fff;
-    }
-    .btn:disabled{
-      cursor:not-allowed;
-      opacity:.45;
-      transform:none;
-      box-shadow:none;
-    }
+    .btn:hover{transform:translateY(-1px); box-shadow:0 12px 24px rgba(65,33,55,.13);}
+    .btn:active{transform:translateY(0);}
+    .btn.primary{border-color:var(--plum-dark); background:linear-gradient(135deg, var(--plum), var(--plum-dark)); color:#fff;}
+    .btn.secondary{background:var(--sage-soft); border-color:#c6d1bd; color:#31402e;}
+    .btn:disabled{cursor:not-allowed; opacity:.48; transform:none; box-shadow:none;}
 
-    .hint{
-      margin-top: 10px;
-      padding: 12px;
-      border-radius: 14px;
-      border:1px dashed rgba(71,85,105,.35);
-      background: rgba(255,255,255,.75);
-      color: var(--muted);
-      font-size: 14px;
-      line-height:1.35;
+    .lockBanner, .errorBanner{
+      margin:16px 0 0;
+      padding:12px 14px;
+      border-radius:18px;
+      border:1px solid rgba(138,47,36,.22);
+      background:var(--warn-soft);
+      color:#672117;
+      font-size:.92rem;
+      font-weight:850;
     }
+    .errorBanner{display:none;}
 
-    /* Locked sections */
-    .locked{
-      opacity: .55;
-      filter: grayscale(.15);
-      position: relative;
-    }
-    .locked input, .locked textarea, .locked button{
-      pointer-events:none;
-    }
-    .lockBanner{
-      margin: 10px 0 0;
-      padding: 10px 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(239,68,68,.25);
-      background: rgba(239,68,68,.10);
-      color: #7f1d1d;
-      font-size: 13px;
-      font-weight: 800;
-    }
+    .side-card{position:sticky; top:18px;}
+    @media (max-width:980px){.side-card{position:static;}}
 
-    /* Pyramid visual */
-    .pyramid{display:grid; gap: 10px; margin-top: 8px;}
-    .layer{
-      border-radius: 16px;
-      padding: 12px;
-      color:#fff;
-      box-shadow: 0 10px 24px rgba(15,23,42,.12);
-    }
-    .layer strong{display:block; font-size: 14px; opacity:.95;}
-    .layer p{margin: 6px 0 0; font-size: 14px; line-height:1.35;}
-    .what{background: linear-gradient(90deg, rgba(99,102,241,1), rgba(99,102,241,.75));}
-    .how{background: linear-gradient(90deg, rgba(6,182,212,1), rgba(6,182,212,.75));}
-    .why{background: linear-gradient(90deg, rgba(245,158,11,1), rgba(245,158,11,.78));}
+    .stack{display:grid; gap:14px; margin-top:18px;}
+    .piece{border-radius:22px; padding:16px; border:1px solid rgba(219,199,210,.96); background:#fffefa;}
+    .piece strong{display:block; font-family:Georgia, "Times New Roman", serif; font-size:1.7rem; line-height:1; color:var(--plum-dark); margin-bottom:8px;}
+    .piece p{margin:0; color:var(--muted); font-size:.95rem; line-height:1.38;}
+    .piece.what{border-left:8px solid var(--plum);}
+    .piece.how{border-left:8px solid var(--clay);}
+    .piece.why{border-left:8px solid var(--sage);}
 
-    .meter{
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 16px;
-      border:1px solid rgba(219,227,240,.95);
-      background:#fff;
-    }
-    .bar{
-      height: 10px;
-      background: rgba(15,23,42,.08);
-      border-radius: 999px;
-      overflow:hidden;
-      margin-top: 8px;
-    }
-    .fill{
-      height:100%;
-      width: 0%;
-      background: linear-gradient(90deg, rgba(245,158,11,1), rgba(6,182,212,1), rgba(99,102,241,1));
-      border-radius: 999px;
-      transition: width .25s ease;
-    }
-    .status{
-      display:flex; justify-content:space-between; align-items:center; gap:12px;
-      font-size: 13px; color: var(--muted);
-    }
-    .flag{
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-weight: 900;
-      font-size: 12px;
-      border: 1px solid rgba(219,227,240,.95);
-      background: rgba(255,255,255,.95);
-      color: var(--muted);
-      white-space: nowrap;
-    }
-    .flag.good{color: #14532d; border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.10);}
-    .flag.warn{color: #7f1d1d; border-color: rgba(239,68,68,.35); background: rgba(239,68,68,.10);}
+    .meter{margin-top:18px; padding:16px; border-radius:22px; border:1px solid rgba(219,199,210,.96); background:rgba(255,253,248,.78);}
+    .status{display:flex; justify-content:space-between; gap:12px; color:var(--muted); font-size:.92rem;}
+    .status b{color:var(--ink);}
+    .flag{padding:6px 10px; border-radius:999px; font-weight:900; font-size:.78rem; border:1px solid var(--border); background:#fffefa; color:var(--plum); white-space:nowrap;}
+    .flag.blocked{color:#672117; border-color:rgba(138,47,36,.3); background:var(--warn-soft);}
+    .bar{height:11px; background:rgba(36,24,33,.11); border-radius:999px; overflow:hidden; margin-top:12px;}
+    .fill{height:100%; width:0%; border-radius:999px; background:linear-gradient(90deg, var(--plum), var(--clay), var(--sage)); transition:width .25s ease;}
+    .hint{margin-top:14px; color:var(--muted); font-size:.92rem; line-height:1.42;}
+    .hint b{color:var(--ink);}
 
-    .finalBox{
-      border-radius: 18px;
-      border: 1px solid rgba(219,227,240,.95);
-      background:#fff;
-      padding: 14px;
-      margin-top: 12px;
-    }
-    .finalBox pre{
-      margin:0;
-      white-space: pre-wrap;
-      word-break: break-word;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 14px;
-      line-height:1.35;
-    }
+    .final-card, .submission-card{margin-top:34px;}
+    .finalBox, .submission-box{border-radius:24px; border:1px solid rgba(91,35,78,.22); background:linear-gradient(180deg, #fffefa, #fbf1e8); padding:18px; margin-top:18px;}
+    .finalBox pre, .submission-box pre{margin:0; white-space:pre-wrap; word-break:break-word; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:.96rem; line-height:1.48;}
 
-    details{
-      border:1px solid rgba(219,227,240,.95);
-      background: rgba(255,255,255,.85);
-      border-radius: 16px;
-      padding: 10px 12px;
-      margin-top: 10px;
-    }
-    summary{cursor:pointer; font-weight: 900; color: var(--ink);}
-    details p{color: var(--muted); margin: 10px 0 0; line-height:1.35}
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:16px;}
+    .tiny{color:var(--muted); font-size:.84rem;}
+    details{border:1px solid rgba(219,199,210,.96); background:rgba(255,253,248,.75); border-radius:22px; padding:14px 16px; margin-top:18px;}
+    summary{cursor:pointer; font-weight:900; color:var(--plum-dark);}
+    details p{color:var(--muted); margin:10px 0 0; font-size:.94rem;}
 
-    .toast{
-      position: fixed;
-      left: 50%;
-      bottom: 18px;
-      transform: translateX(-50%);
-      background: rgba(15, 23, 42, .92);
-      color:#fff;
-      padding: 10px 12px;
-      border-radius: 999px;
-      font-size: 13px;
-      box-shadow: 0 16px 30px rgba(15,23,42,.25);
-      opacity: 0;
-      pointer-events:none;
-      transition: opacity .2s ease, transform .2s ease;
+    .toast{position:fixed; left:50%; bottom:18px; transform:translateX(-50%); background:rgba(36,24,33,.95); color:#fff; padding:10px 14px; border-radius:999px; font-size:.88rem; box-shadow:0 18px 34px rgba(36,24,33,.25); opacity:0; pointer-events:none; transition:opacity .2s ease, transform .2s ease; z-index:30;}
+    .toast.show{opacity:1; transform:translateX(-50%) translateY(-4px);}
+
+    @media print{
+      body{background:#fff; padding:0; color:#000;}
+      .hero, .builder, .side-card, .toast, .no-print{display:none !important;}
+      .wrap{max-width:none; margin:0;}
+      main.layout{display:block;}
+      .submission-card{display:block; border:none; box-shadow:none; padding:0; margin:0;}
+      .submission-card .plain-help{display:none;}
+      .submission-box{border:none; padding:0; margin:0; background:#fff;}
+      .submission-box pre{font-family:Georgia, "Times New Roman", serif; font-size:12pt; line-height:1.5;}
     }
-    .toast.show{opacity:1; transform: translateX(-50%) translateY(-4px);}
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#builder">Skip to thesis builder</a>
+
   <div class="wrap">
-    <header>
-      <h1>Thesis Pyramid Builder</h1>
-      <p class="sub">
-        Build your thesis in 3 parts. You unlock each step by finishing the one above it.
-      </p>
-      <div class="chips">
-        <div class="chip"><b>WHAT</b> = topic + focus</div>
-        <div class="chip"><b>HOW</b> = what your essay will do</div>
-        <div class="chip"><b>WHY</b> = the purpose (why it matters)</div>
-        <div class="chip">Tip: avoid “things / stuff”</div>
+    <header class="hero">
+      <p class="eyebrow">ENG 101 Practice Page</p>
+      <h1>Thesis Statement Builder</h1>
+      <p class="sub">Build one thesis sentence using this frame: <strong>This essay will</strong> + <strong>by</strong> + <strong>so that</strong>. Use your own career field. Do not use first person.</p>
+      <div class="frame-strip" aria-label="Required thesis frame">
+        <div class="frame-chip"><strong>WHAT</strong><span>This essay will explain what?</span></div>
+        <div class="frame-chip"><strong>HOW</strong><span>By covering which 2 or 3 research areas?</span></div>
+        <div class="frame-chip"><strong>WHY</strong><span>So that the reader understands what?</span></div>
       </div>
     </header>
 
-    <div class="grid">
-      <!-- LEFT -->
-      <section class="card" aria-label="Builder">
-        <div class="stepTitle">
-          <h2>Step 1: Pick your topic</h2>
-          <span class="tiny">Auto-saves</span>
+    <main class="layout" id="builder">
+      <section class="builder" aria-label="Thesis builder form">
+        <div class="step-card">
+          <p class="step-kicker">Step 1</p>
+          <h2>Topic</h2>
+          <p class="plain-help">Name the career field you are researching. This can be a specific job title or a broader field. Do not write “my career” or “what I want to do.”</p>
+          <div class="mini-example">
+            <span class="label">Possible career fields</span>
+            <p class="example-text">dental hygienist, electrician, nursing, software development, radiology technician</p>
+          </div>
+          <label for="topic">Your topic</label>
+          <p class="input-help">Use the career field, not the school, program, or scholarship.</p>
+          <input id="topic" type="text" placeholder="Example: radiology technician" />
         </div>
 
-        <label for="topic">What is your career goal?</label>
-        <input id="topic" type="text" placeholder="Example: EMT, dental hygienist, teacher, electrician…" />
-
-        <!-- WHAT -->
-        <div class="stepTitle" style="margin-top:14px;">
-          <h2>Step 2: WHAT </h2>
-          <span class="tiny">Be specific</span>
-        </div>
-
-        <label for="what">WHAT: This essay will…</label>
-        <textarea id="what" placeholder="Example: provide an overview of the path to becoming an EMT"></textarea>
-
-        <!-- HOW (Locked until WHAT) -->
-        <div id="howSectionWrap">
-          <div class="stepTitle" style="margin-top:14px;">
-            <h2>Step 3: HOW (Your essay should be an <b>overview</b>. Avoid prove / argue / convince.)</h2>
-            <span class="tiny">Choose a starter</span>
+        <div class="step-card">
+          <p class="step-kicker">Step 2</p>
+          <h2>WHAT</h2>
+          <p class="plain-help">This part answers the question: what will the essay explain? Try two versions, compare them, then choose the one that fits your essay best.</p>
+          <div class="starter-lesson" aria-label="Thesis starter comparison">
+            <button class="starter-card wrong" id="wrongStarterCard" type="button">
+              <span>Do not use</span>
+              <strong>I will...</strong>
+            </button>
+            <button class="starter-card right" id="rightStarterCard" type="button">
+              <span>The thesis frame is</span>
+              <strong>This essay will...</strong>
+            </button>
           </div>
 
-          <div id="howSection" class="locked">
-            <label>HOW: (click a starter, then add details)</label>
-            <div class="row" id="howButtons"></div>
-            <textarea id="how" placeholder="Example: by describing education requirements, licensing steps, and job expectations"></textarea>
+          <div class="choice-panel">
+            <div class="choice-box">
+              <h3>Try two WHAT versions</h3>
+              <p class="input-help">Both boxes finish the same sentence frame: <strong>This essay will...</strong></p>
 
-            <div class="lockBanner" id="howLockMsg">Locked: finish WHAT first.</div>
+              <div class="try-grid">
+                <div class="try-card">
+                  <strong>Version A: overview</strong>
+                  <p>Use this when the essay gives a broad introduction to the career field.</p>
+                  <label for="whatOverview">Write Version A</label>
+                  <div class="framed-input">
+                    <span class="frame-prefix">This essay will</span>
+                    <textarea class="small-textarea" id="whatOverview" placeholder="provide an overview of radiology technology"></textarea>
+                  </div>
+                  <div class="choice-actions">
+                    <button class="btn use-choice" id="useOverviewBtn" type="button">Use Version A</button>
+                    <span class="selected-note" id="overviewSelected">Selected</span>
+                  </div>
+                </div>
+
+                <div class="try-card">
+                  <strong>Version B: specific verb</strong>
+                  <p>Use this when you know the essay is doing something more specific.</p>
+                  <div class="verb-bank" aria-label="Verb options">
+                    <span class="verb-chip">explain</span>
+                    <span class="verb-chip">examine</span>
+                    <span class="verb-chip">compare</span>
+                    <span class="verb-chip">describe</span>
+                    <span class="verb-chip">outline</span>
+                  </div>
+                  <label for="whatVerb">Write Version B</label>
+                  <div class="framed-input">
+                    <span class="frame-prefix">This essay will</span>
+                    <textarea class="small-textarea" id="whatVerb" placeholder="examine the training, work, and career outlook for radiology technicians"></textarea>
+                  </div>
+                  <div class="errorBanner" id="whatVerbWarning">Do not copy the example. This is cheating. Changing only the career field is not enough.</div>
+                  <div class="choice-actions">
+                    <button class="btn use-choice" id="useVerbBtn" type="button">Use Version B</button>
+                    <span class="selected-note" id="verbSelected">Selected</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="reflect-box">
+                <p><strong>Before choosing:</strong> Which version sounds more like the essay you are actually writing?</p>
+                <p>Version A is broader. Version B is more specific. Neither is automatically better.</p>
+              </div>
+
+              <div class="big-warning" id="whatTrickWarning" role="alert">
+                <strong>No first person.</strong>
+                <p>Do not start the thesis with “I will.” This is a research thesis, so use “This essay will...” instead.</p>
+              </div>
+            </div>
           </div>
+
+          <input id="what" type="hidden" />
         </div>
 
-        <!-- WHY (Locked until HOW) -->
-        <div id="whySectionWrap">
-          <div class="stepTitle" style="margin-top:14px;">
-            <h2>Step 4: WHY </h2>
-            <span class="tiny">Purpose</span>
+        <div class="step-card locked" id="howSection">
+          <p class="step-kicker">Step 3</p>
+          <h2>HOW</h2>
+          <p class="plain-help">This part uses <strong>by</strong>. The box already adds “by,” so type the action and the 2 or 3 main areas your essay will cover.</p>
+          <div class="mini-example">
+            <span class="label">Sentence pattern</span>
+            <p class="example-text">by explaining [research area 1], [research area 2], and [research area 3].</p>
           </div>
-
-          <div id="whySection" class="locked">
-            <label for="why">WHY: to / so that / for the purpose of…</label>
-            <textarea id="why" placeholder="Example: so that a student understands what to do next after an AA/transfer program"></textarea>
-
-            <div class="lockBanner" id="whyLockMsg">Locked: finish HOW first.</div>
+          <label for="how">Your HOW</label>
+          <p class="input-help">Choose a starter, then add 2 or 3 research categories your essay actually covers.</p>
+          <div class="starter-buttons" id="howButtons" aria-label="How sentence starters"></div>
+          <div class="framed-input">
+            <span class="frame-prefix">by</span>
+            <textarea id="how" placeholder="explaining training requirements, typical costs, and job outlook"></textarea>
           </div>
+          <div class="errorBanner" id="howExampleWarning">Do not copy the example. This is cheating. Change the research areas before moving on. Switching the starter word is not enough.</div>
+          <div class="lockBanner" id="howLockMsg">Locked: finish WHAT first.</div>
         </div>
 
-        <!-- Final -->
-        <div class="stepTitle" style="margin-top:14px;">
-          <h2>Final: Your full thesis sentence</h2>
-          <span class="tiny">Live preview</span>
+        <div class="step-card locked" id="whySection">
+          <p class="step-kicker">Step 4</p>
+          <h2>WHY</h2>
+          <p class="plain-help">This part uses <strong>so that</strong>. The box already adds “so that,” so type what the reader will understand about your specific career field.</p>
+          <div class="mini-example">
+            <span class="label">Sentence pattern</span>
+            <p class="example-text">so that a student can understand [specific decision, requirement, or next step] for [career field].</p>
+          </div>
+          <label for="why">Your WHY</label>
+          <p class="input-help">Be specific. What decision, requirement, cost, training step, or career reality will the reader understand?</p>
+          <div class="framed-input">
+            <span class="frame-prefix">so that</span>
+            <textarea id="why" placeholder="a student can understand which training steps and costs to plan for before entering radiology technology"></textarea>
+          </div>
+          <div class="errorBanner" id="whySpecificWarning">Be more specific. Name what the reader will understand, such as training steps, costs, licensing, transfer requirements, job duties, salary, or job outlook.</div>
+          <div class="errorBanner" id="whyExampleWarning">Do not copy the example. This is cheating. Change the purpose before submitting.</div>
+          <div class="lockBanner" id="whyLockMsg">Locked: finish HOW first.</div>
         </div>
 
-        <div class="finalBox" role="region" aria-label="Final thesis preview">
-          <pre id="thesisPreview">Start typing above…</pre>
+        <div class="card final-card">
+          <p class="step-kicker">Final sentence</p>
+          <h3>Your thesis</h3>
+          <div class="finalBox" role="region" aria-label="Final thesis preview">
+            <pre id="thesisPreview">Start typing above...</pre>
+          </div>
+          <div class="errorBanner" id="firstPersonWarning">First-person words are not allowed.</div>
+          <div class="errorBanner" id="exampleWarning">Copied example wording is not allowed.</div>
+          <div class="row no-print">
+            <button class="btn primary" id="copyBtn" type="button" disabled>Copy thesis sentence (locked)</button>
+            <button class="btn" id="resetBtn" type="button">Reset</button>
+          </div>
+          <details class="no-print">
+            <summary>Why no “I” or “my”?</summary>
+            <p>This thesis is for a research essay. It should sound like an academic overview, not a personal story.</p>
+          </details>
         </div>
 
-        <div class="row" style="margin-top:10px;">
-          <button class="btn primary" id="copyBtn" disabled>Copy for Canvas (locked)</button>
-          <button class="btn" id="resetBtn" title="Clears your answers">Reset</button>
-        </div>
-
-        <details>
-          <summary>Need an example?</summary>
-          <p>
-            <b>Example thesis:</b> This essay will provide an overview of the path to becoming an EMT,
-            by describing education requirements, state licensing steps, and current job expectations,
-            so that a student can understand what they need to do after an AA/transfer program to qualify for entry-level jobs.
-          </p>
-          <button class="btn" id="loadExample" style="margin-top:10px;">Load this example</button>
-        </details>
+        <section class="card submission-card" aria-label="Canvas submission output">
+          <p class="step-kicker">Canvas submission</p>
+          <h3>What to submit</h3>
+          <p class="plain-help">Copy this into Canvas when it unlocks.</p>
+          <div class="submission-box" role="region" aria-label="Submission preview">
+            <pre id="submissionPreview">Complete the thesis builder above. Your submission will appear here.</pre>
+          </div>
+          <div class="row no-print">
+            <button class="btn primary" id="copySubmissionBtn" type="button" disabled>Copy submission (locked)</button>
+            <button class="btn secondary" id="printBtn" type="button" disabled>Print / Save as PDF</button>
+          </div>
+        </section>
       </section>
 
-      <!-- RIGHT -->
-      <aside class="card" aria-label="Pyramid and feedback">
-        <div class="stepTitle">
-          <h2>Your Thesis Pyramid</h2>
-          <span class="tiny">Stacks together</span>
-        </div>
-
-        <div class="pyramid" aria-label="Pyramid layers">
-          <div class="layer what">
-            <strong>WHAT</strong>
-            <p id="whatOut">This essay will ________.</p>
-          </div>
-          <div class="layer how">
-            <strong>HOW</strong>
-            <p id="howOut">by ______________________________.</p>
-          </div>
-          <div class="layer why">
-            <strong>WHY</strong>
-            <p id="whyOut">to / so that / for the purpose of ______________________________.</p>
-          </div>
+      <aside class="card side-card" aria-label="Thesis progress and feedback">
+        <p class="step-kicker">Live check</p>
+        <h3>Your pieces</h3>
+        <div class="stack" aria-label="Thesis pieces">
+          <div class="piece what"><strong>WHAT</strong><p id="whatOut">This essay will ________.</p></div>
+          <div class="piece how"><strong>HOW</strong><p id="howOut">by ______________________________.</p></div>
+          <div class="piece why"><strong>WHY</strong><p id="whyOut">so that ______________________________.</p></div>
         </div>
 
         <div class="meter" aria-label="Progress meter">
           <div class="status">
-            <div>
-              <b>Progress</b><br>
-              <span id="meterText">Start with your career goal + WHAT.</span>
-            </div>
+            <div><b>Progress</b><br><span id="meterText">Start with WHAT.</span></div>
             <span class="flag" id="flag">0 / 3 done</span>
           </div>
-          <div class="bar" aria-hidden="true">
-            <div class="fill" id="fill"></div>
-          </div>
-
-          <div class="hint" id="warnings" style="margin-top:12px;">
-            <b>Game rules:</b><br>
-            1) Fill WHAT → unlock HOW<br>
-            2) Fill HOW → unlock WHY<br>
-            3) Fill WHY → unlock Copy
-          </div>
+          <div class="bar" aria-hidden="true"><div class="fill" id="fill"></div></div>
+          <div class="hint" id="warnings"><b>Before you submit:</b><br>WHAT, HOW, and WHY are all required.<br>No first person.<br>WHY should be specific.<br>Do not leave the writing-box examples unchanged.</div>
         </div>
       </aside>
-    </div>
+    </main>
   </div>
 
   <div class="toast" id="toast">Copied!</div>
 
   <script>
-    // ----- SAFE + SIMPLE JS (Safari-friendly) -----
-    var HOW_STARTERS = [
-      "by outlining",
-      "by describing",
-      "by explaining",
-      "by providing an overview of",
-      "by comparing",
-      "by examining",
-      "by looking into"
+    var HOW_STARTERS = ["outlining", "describing", "explaining", "comparing", "examining"];
+    var VAGUE_WORDS = ["things", "stuff", "a lot", "lots", "many", "good", "bad", "nice", "interesting", "various", "different", "some"];
+    var ARGUMENT_VERBS = ["prove", "argue", "convince", "debate", "fight", "win"];
+    var FIRST_PERSON_WORDS = ["i", "me", "my", "mine", "myself", "we", "us", "our", "ours", "ourselves"];
+    var EXAMPLE_LOCK_PHRASES = [
+      "provide an overview of the path to becoming a dental hygienist",
+      "by explaining the required education licensing process and entry-level job expectations",
+      "training requirements typical costs and job outlook",
+      "so that a student can understand the steps needed to prepare for an entry-level career",
+      "a student can understand what steps to take next",
+      "a student can understand which training steps and costs to plan for before entering radiology technology"
     ];
 
-    var VAGUE_WORDS = ["things","stuff","a lot","lots","many","good","bad","nice","interesting","various","different","some"];
-    var ARGUMENT_VERBS = ["prove","argue","convince","debate","fight","win"];
-
     var topicEl = document.getElementById("topic");
-    var whatEl  = document.getElementById("what");
-    var howEl   = document.getElementById("how");
-    var whyEl   = document.getElementById("why");
-
+    var whatEl = document.getElementById("what");
+    var whatOverviewEl = document.getElementById("whatOverview");
+    var whatVerbEl = document.getElementById("whatVerb");
+    var whatTrickWarning = document.getElementById("whatTrickWarning");
+    var whatVerbWarning = document.getElementById("whatVerbWarning");
+    var wrongStarterCard = document.getElementById("wrongStarterCard");
+    var rightStarterCard = document.getElementById("rightStarterCard");
+    var useOverviewBtn = document.getElementById("useOverviewBtn");
+    var useVerbBtn = document.getElementById("useVerbBtn");
+    var overviewSelected = document.getElementById("overviewSelected");
+    var verbSelected = document.getElementById("verbSelected");
+    var selectedWhatMode = "overview";
+    var howEl = document.getElementById("how");
+    var whyEl = document.getElementById("why");
     var whatOut = document.getElementById("whatOut");
-    var howOut  = document.getElementById("howOut");
-    var whyOut  = document.getElementById("whyOut");
-
+    var howOut = document.getElementById("howOut");
+    var whyOut = document.getElementById("whyOut");
     var preview = document.getElementById("thesisPreview");
-    var fill    = document.getElementById("fill");
+    var submissionPreview = document.getElementById("submissionPreview");
+    var fill = document.getElementById("fill");
     var meterText = document.getElementById("meterText");
     var flag = document.getElementById("flag");
     var warningsBox = document.getElementById("warnings");
-
     var howSection = document.getElementById("howSection");
     var whySection = document.getElementById("whySection");
     var howLockMsg = document.getElementById("howLockMsg");
+    var howExampleWarning = document.getElementById("howExampleWarning");
     var whyLockMsg = document.getElementById("whyLockMsg");
-
+    var whySpecificWarning = document.getElementById("whySpecificWarning");
+    var whyExampleWarning = document.getElementById("whyExampleWarning");
+    var firstPersonWarning = document.getElementById("firstPersonWarning");
+    var exampleWarning = document.getElementById("exampleWarning");
     var copyBtn = document.getElementById("copyBtn");
+    var copySubmissionBtn = document.getElementById("copySubmissionBtn");
+    var printBtn = document.getElementById("printBtn");
     var toast = document.getElementById("toast");
 
-    // Build HOW buttons
-    var howButtonsWrap = document.getElementById("howButtons");
-    HOW_STARTERS.forEach(function(starter){
+    function cleanSentence(text){
+      var words = String(text || "").split(" ").filter(function(part){ return part.trim() !== ""; });
+      return words.join(" ").trim();
+    }
+
+    function normalizeForCheck(text){
+      return cleanSentence(String(text || "").toLowerCase()).replace(/[.,!?;:]/g, "");
+    }
+
+    function hasText(text){return cleanSentence(text).length > 0;}
+
+    function stripFinalPunctuation(text){
+      var s = cleanSentence(text);
+      while(s.endsWith(".") || s.endsWith("!") || s.endsWith("?")){s = s.slice(0, -1);}
+      return s;
+    }
+
+    function startsWithLower(text, starter){return cleanSentence(text).toLowerCase().startsWith(starter);}
+
+    function getWords(text){
+      var words = [];
+      var current = "";
+      var lower = String(text || "").toLowerCase();
+      for(var i = 0; i < lower.length; i++){
+        var ch = lower.charAt(i);
+        if((ch >= "a" && ch <= "z") || ch === "'") current += ch;
+        else{ if(current){words.push(current); current = "";} }
+      }
+      if(current) words.push(current);
+      return words;
+    }
+
+    function getFirstPersonHits(){
+      var words = getWords([topicEl.value, whatEl.value, howEl.value, whyEl.value].join(" "));
+      var hits = [];
+      words.forEach(function(word){ if(FIRST_PERSON_WORDS.indexOf(word) !== -1 && hits.indexOf(word) === -1) hits.push(word); });
+      return hits;
+    }
+
+    function getExampleHits(){
+      var combined = normalizeForCheck([topicEl.value, whatEl.value, howEl.value, whyEl.value].join(" "));
+      var hits = [];
+      EXAMPLE_LOCK_PHRASES.forEach(function(phrase){
+        var normalized = normalizeForCheck(phrase);
+        if(normalized && combined.indexOf(normalized) !== -1) hits.push(phrase);
+      });
+      return hits;
+    }
+
+    function hasWhatVerbExampleCopy(){
+      var whatText = normalizeForCheck(whatVerbEl.value);
+      var copiedStructure = normalizeForCheck("training work and career outlook");
+      return whatText.indexOf(copiedStructure) !== -1;
+    }
+
+    function hasHowExampleCopy(){
+      var howText = normalizeForCheck(howEl.value);
+      var copiedCategories = normalizeForCheck("training requirements typical costs and job outlook");
+      return howText.indexOf(copiedCategories) !== -1;
+    }
+
+    function hasWhyExampleCopy(){
+      var whyText = normalizeForCheck(whyEl.value);
+      var copiedWhyExample = normalizeForCheck("a student can understand which training steps and costs to plan for before entering radiology technology");
+      return whyText.indexOf(copiedWhyExample) !== -1;
+    }
+
+    function hasVagueWhy(){
+      var whyText = normalizeForCheck(whyEl.value);
+      if(!hasText(whyEl.value)) return false;
+      var vagueWhyPhrases = [
+        "a student can understand what steps to take next",
+        "students can understand what steps to take next",
+        "the reader can understand what steps to take next",
+        "a person can understand what steps to take next",
+        "understand what steps to take next",
+        "learn more about the career",
+        "understand the career better",
+        "know more about the career"
+      ];
+      for(var i = 0; i < vagueWhyPhrases.length; i++){
+        if(whyText.indexOf(normalizeForCheck(vagueWhyPhrases[i])) !== -1) return true;
+      }
+      return false;
+    }
+
+    function removeStarter(text){
+      var cleaned = cleanSentence(text);
+      var lower = cleaned.toLowerCase();
+      var allStarters = HOW_STARTERS.concat(["by ", "i will"]);
+      for(var i = 0; i < allStarters.length; i++){
+        var starter = allStarters[i];
+        if(lower.startsWith(starter)) return cleaned.slice(starter.length).trim();
+      }
+      return cleaned;
+    }
+
+    function showNoFirstPersonWarning(){
+      whatTrickWarning.classList.add("show");
+      showToast("Use 'This essay will,' not 'I will.'");
+      setTimeout(function(){ whatTrickWarning.classList.remove("show"); }, 5200);
+    }
+
+    function showCorrectStarterReminder(){
+      showToast("Good. The builder adds 'This essay will' for you.");
+    }
+
+    function makeStarterButton(label, target, starter, options){
       var b = document.createElement("button");
       b.type = "button";
-      b.className = "btn";
-      b.textContent = starter;
+      b.className = "btn" + (options && options.trick ? " trick" : "");
+      b.textContent = label;
       b.addEventListener("click", function(){
-        var current = (howEl.value || "").trim();
-        if(!current){
-          howEl.value = starter + " ";
-        }else{
-          howEl.value = starter + " " + current.replace(/^by\s+\w+\s*/i, "").trim();
+        if(options && options.trick){
+          showNoFirstPersonWarning();
+          return;
         }
-        howEl.focus();
+        var current = removeStarter(target.value);
+        target.value = starter + (current ? " " + current : " ");
+        target.focus();
         updateAll();
         saveAll();
       });
-      howButtonsWrap.appendChild(b);
-    });
-
-    function cleanSentence(s){
-      return (s || "").replace(/\s+/g, " ").replace(/\s+,/g, ",").trim();
+      return b;
     }
-    function hasText(s){ return (s || "").trim().length > 0; }
+
+    function normalizeWhy(text){
+      var y = cleanSentence(text);
+      if(!y) return "";
+      if(startsWithLower(y, "so that ") || startsWithLower(y, "to ") || startsWithLower(y, "for the purpose of ")) return y;
+      return "so that " + y;
+    }
 
     function buildThesis(what, how, why){
-      if(!hasText(what) && !hasText(how) && !hasText(why)) return "Start typing above…";
-
+      if(!hasText(what) && !hasText(how) && !hasText(why)) return "Start typing above...";
       var w = cleanSentence(what);
       var h = cleanSentence(how);
-      var y = cleanSentence(why);
-
-      if(w && !/^this essay will/i.test(w)) w = "This essay will " + w;
-      if(h && !/^by\s/i.test(h)) h = "by " + h;
-
+      var y = normalizeWhy(why);
+      if(w && !startsWithLower(w, "this essay will")) w = "This essay will " + w;
+      if(h && !startsWithLower(h, "by ")) h = "by " + h;
       var parts = [];
-      if(w) parts.push(w.replace(/\.*$/,""));
-      if(h) parts.push(h.replace(/\.*$/,""));
-      if(y) parts.push(y.replace(/\.*$/,""));
-
-      if(parts.length === 1) return parts[0] + ".";
-      if(parts.length === 2) return parts[0] + ", " + parts[1] + ".";
-      return parts[0] + ", " + parts[1] + ", " + parts[2] + ".";
+      if(w) parts.push(stripFinalPunctuation(w));
+      if(h) parts.push(stripFinalPunctuation(h));
+      if(y) parts.push(stripFinalPunctuation(y));
+      return parts.join(" ") + ".";
     }
 
-    function findHits(list, text){
-      var t = (text || "").toLowerCase();
-      return list.filter(function(w){ return t.indexOf(w) !== -1; });
+    function buildSubmission(){
+      var topic = cleanSentence(topicEl.value) || "(not entered yet)";
+      var w = cleanSentence(whatEl.value) || "(not entered yet)";
+      var h = cleanSentence(howEl.value) || "(not entered yet)";
+      var y = normalizeWhy(whyEl.value) || "(not entered yet)";
+      if(w !== "(not entered yet)" && !startsWithLower(w, "this essay will")) w = "This essay will " + w;
+      if(h !== "(not entered yet)" && !startsWithLower(h, "by ")) h = "by " + h;
+      return `Thesis Statement Practice
+
+Topic: ${topic}
+
+WHAT: ${w}
+HOW: ${h}
+WHY: ${y}
+
+Full thesis sentence:
+${buildThesis(whatEl.value, howEl.value, whyEl.value)}`;
     }
 
     function showToast(text){
       toast.textContent = text;
       toast.classList.add("show");
-      setTimeout(function(){ toast.classList.remove("show"); }, 1200);
+      setTimeout(function(){toast.classList.remove("show");}, 1400);
     }
 
-    // Game locks
-    function setLocked(el, locked){
-      if(locked) el.classList.add("locked");
-      else el.classList.remove("locked");
+    function setLocked(el, locked){locked ? el.classList.add("locked") : el.classList.remove("locked");}
+
+    function hasFirstPerson(){return getFirstPersonHits().length > 0;}
+    function hasExampleCopy(){return getExampleHits().length > 0;}
+    function syncSelectedWhat(){
+      if(selectedWhatMode === "verb") whatEl.value = whatVerbEl.value;
+      else whatEl.value = whatOverviewEl.value;
     }
 
-    function updateGameLocks(){
+    function isComplete(){return hasText(whatEl.value) && hasText(howEl.value) && hasText(whyEl.value) && !hasFirstPerson() && !hasExampleCopy() && !hasVagueWhy() && !hasWhyExampleCopy() && !hasWhatVerbExampleCopy();}
+
+    function markProblemFields(){
+      [topicEl, whatOverviewEl, whatVerbEl, howEl, whyEl].forEach(function(field){
+        var text = normalizeForCheck(field.value);
+        var words = getWords(field.value);
+        var problem = false;
+        words.forEach(function(word){ if(FIRST_PERSON_WORDS.indexOf(word) !== -1) problem = true; });
+        EXAMPLE_LOCK_PHRASES.forEach(function(phrase){ if(text.indexOf(normalizeForCheck(phrase)) !== -1) problem = true; });
+        if(field === whatVerbEl && hasWhatVerbExampleCopy()) problem = true;
+        problem ? field.classList.add("field-error") : field.classList.remove("field-error");
+      });
+    }
+
+    function updateLocks(){
       var whatDone = hasText(whatEl.value);
-      var howDone  = hasText(howEl.value);
-      var whyDone  = hasText(whyEl.value);
+      var howDone = hasText(howEl.value);
+      syncSelectedWhat();
+      var firstHits = getFirstPersonHits();
+      var exampleHits = getExampleHits();
+      var blocked = firstHits.length || exampleHits.length;
+      var complete = isComplete();
 
       setLocked(howSection, !whatDone);
       howLockMsg.style.display = whatDone ? "none" : "block";
+      howLockMsg.textContent = "Locked: finish WHAT first.";
 
-      setLocked(whySection, !(whatDone && howDone));
-      whyLockMsg.style.display = (whatDone && howDone) ? "none" : "block";
+      var whatVerbCopied = hasWhatVerbExampleCopy();
+      var howExampleCopied = hasHowExampleCopy();
+      var vagueWhy = hasVagueWhy();
+      var whyExampleCopied = hasWhyExampleCopy();
+      whatVerbWarning.style.display = whatVerbCopied ? "block" : "none";
+      howSection.classList.toggle("revision-needed", howExampleCopied);
+      whySection.classList.toggle("revision-needed", vagueWhy || whyExampleCopied);
+      howExampleWarning.style.display = howExampleCopied ? "block" : "none";
+      whySpecificWarning.style.display = vagueWhy ? "block" : "none";
+      whyExampleWarning.style.display = whyExampleCopied ? "block" : "none";
 
-      copyBtn.disabled = !(whatDone && howDone && whyDone);
-      copyBtn.textContent = copyBtn.disabled ? "Copy for Canvas (locked)" : "Copy for Canvas";
+      setLocked(whySection, !(whatDone && howDone) || howExampleCopied);
+      whyLockMsg.style.display = whatDone && howDone && !howExampleCopied ? "none" : "block";
+      whyLockMsg.textContent = howExampleCopied ? "Locked: do not copy the example. This is cheating." : "Locked: finish HOW first.";
+
+      firstPersonWarning.style.display = firstHits.length ? "block" : "none";
+      if(firstHits.length) firstPersonWarning.innerHTML = "Remove first-person words: <b>" + firstHits.join(", ") + "</b>. Use objective academic voice.";
+
+      exampleWarning.style.display = exampleHits.length ? "block" : "none";
+      if(exampleHits.length) exampleWarning.textContent = "Do not copy the example. This is cheating. Revise the example wording, then copy/print will unlock.";
+
+      copyBtn.disabled = !complete;
+      copySubmissionBtn.disabled = !complete;
+      printBtn.disabled = !complete;
+      copyBtn.textContent = complete ? "Copy thesis sentence" : "Copy thesis sentence (locked)";
+      copySubmissionBtn.textContent = complete ? "Copy submission" : "Copy submission (locked)";
+    }
+
+    function findHits(list, text){
+      var lower = String(text || "").toLowerCase();
+      return list.filter(function(item){return lower.indexOf(item) !== -1;});
     }
 
     function updateProgress(){
       var done = 0;
+      var blocked = hasFirstPerson() || hasExampleCopy() || hasVagueWhy() || hasWhyExampleCopy() || hasWhatVerbExampleCopy();
       if(hasText(whatEl.value)) done++;
       if(hasText(howEl.value)) done++;
       if(hasText(whyEl.value)) done++;
-
-      var pct = Math.round((done/3) * 100);
-      fill.style.width = pct + "%";
-      flag.textContent = done + " / 3 done";
-
-      if(done === 0) meterText.textContent = "Start with WHAT.";
-      if(done === 1) meterText.textContent = "Nice. HOW is unlocked.";
-      if(done === 2) meterText.textContent = "Nice. WHY is unlocked.";
-      if(done === 3) meterText.textContent = "Done. Copy is unlocked.";
+      fill.style.width = blocked ? "0%" : Math.round((done / 3) * 100) + "%";
+      flag.classList.toggle("blocked", blocked);
+      flag.textContent = blocked ? "Revision needed" : done + " / 3 done";
+      if(blocked) meterText.textContent = "Revise the example, first-person wording, or vague WHY.";
+      else if(done === 0) meterText.textContent = "Start with WHAT.";
+      else if(done === 1) meterText.textContent = "Good. HOW is unlocked.";
+      else if(done === 2) meterText.textContent = "Good. WHY is unlocked.";
+      else meterText.textContent = "Complete. Copy or print.";
     }
 
     function updateChecks(){
       var combined = [topicEl.value, whatEl.value, howEl.value, whyEl.value].join(" ");
-      var vague = findHits(VAGUE_WORDS, combined);
-      var argy  = findHits(ARGUMENT_VERBS, combined);
-
+      var vague = Array.from(new Set(findHits(VAGUE_WORDS, combined))).slice(0, 4);
+      var argy = Array.from(new Set(findHits(ARGUMENT_VERBS, combined)));
+      var firstHits = getFirstPersonHits();
+      var exampleHits = getExampleHits();
+      var vagueWhy = hasVagueWhy();
+      var whyExampleCopied = hasWhyExampleCopy();
+      var whatVerbCopied = hasWhatVerbExampleCopy();
       var tips = [];
-      if(vague.length){
-        tips.push("Try replacing vague words: <b>" + Array.from(new Set(vague)).slice(0,6).join(", ") + "</b>.");
-      }
-      if(argy.length){
-        tips.push("Avoid argument words: <b>" + Array.from(new Set(argy)).join(", ") + "</b>. Use overview verbs (describe, explain, examine).");
-      }
-
-      if(!tips.length){
-        warningsBox.innerHTML = "<b>Quick checks:</b><br>• Specific details (2–3 parts)?<br>• Overview verbs?<br>• WHY explains purpose?";
-      }else{
-        warningsBox.innerHTML = "<b>Quick checks:</b><br>• " + tips.join("<br>• ");
-      }
+      if(firstHits.length) tips.push("Remove first person: <b>" + firstHits.join(", ") + "</b>.");
+      if(exampleHits.length) tips.push("Do not copy the example. This is cheating. Revise the example wording to unlock submission.");
+      if(whatVerbCopied) tips.push("Do not copy the Version B example. This is cheating. Changing only the career field is not enough.");
+      if(vagueWhy) tips.push("Make WHY more specific. Name the decision, requirement, cost, training step, or career reality the reader will understand.");
+      if(whyExampleCopied) tips.push("Do not copy the WHY example. This is cheating. Rewrite the purpose in your own words.");
+      if(vague.length) tips.push("Replace vague words: <b>" + vague.join(", ") + "</b>.");
+      if(argy.length) tips.push("Use overview words, not <b>" + argy.join(", ") + "</b>.");
+      warningsBox.innerHTML = tips.length ? "<b>Fix:</b><br>" + tips.join("<br>") : "<b>Before you submit:</b><br>WHAT, HOW, and WHY are all required.<br>No first person.<br>WHY should be specific.<br>Do not leave the writing-box examples unchanged.";
     }
 
-    function updateAll(){
-      // Pyramid outputs
-      if(hasText(whatEl.value)){
-        var w = whatEl.value.trim();
-        whatOut.textContent = (/^this essay will/i.test(w)) ? w : ("This essay will " + w);
-      }else{
-        whatOut.textContent = "This essay will ________.";
-      }
-
-      if(hasText(howEl.value)){
-        var h = howEl.value.trim();
-        howOut.textContent = (/^by\s/i.test(h)) ? h : ("by " + h);
-      }else{
-        howOut.textContent = "by ______________________________.";
-      }
-
-      whyOut.textContent = hasText(whyEl.value) ? whyEl.value.trim() : "to / so that / for the purpose of ______________________________.";
-
-      // Thesis preview
+    function updateOutputs(){
+      syncSelectedWhat();
+      var w = cleanSentence(whatEl.value);
+      var h = cleanSentence(howEl.value);
+      var y = normalizeWhy(whyEl.value);
+      whatOut.textContent = w ? (startsWithLower(w, "this essay will") ? w : "This essay will " + w) : "This essay will ________.";
+      howOut.textContent = h ? (startsWithLower(h, "by ") ? h : "by " + h) : "by ______________________________.";
+      whyOut.textContent = y || "so that ______________________________.";
       preview.textContent = buildThesis(whatEl.value, howEl.value, whyEl.value);
-
-      updateGameLocks();
-      updateProgress();
-      updateChecks();
+      submissionPreview.textContent = buildSubmission();
     }
+
+    function updateChoiceUI(){
+      useOverviewBtn.classList.toggle("active", selectedWhatMode === "overview");
+      useVerbBtn.classList.toggle("active", selectedWhatMode === "verb");
+      overviewSelected.classList.toggle("show", selectedWhatMode === "overview");
+      verbSelected.classList.toggle("show", selectedWhatMode === "verb");
+    }
+
+    function updateAll(){syncSelectedWhat(); updateChoiceUI(); markProblemFields(); updateOutputs(); updateLocks(); updateProgress(); updateChecks();}
 
     function saveAll(){
-      try{
-        var data = { topic: topicEl.value, what: whatEl.value, how: howEl.value, why: whyEl.value };
-        localStorage.setItem("thesisPyramid_game_v1", JSON.stringify(data));
-      }catch(e){}
+      try{localStorage.setItem("thesisStatementBuilder_v4", JSON.stringify({topic:topicEl.value, what:whatEl.value, whatOverview:whatOverviewEl.value, whatVerb:whatVerbEl.value, selectedWhatMode:selectedWhatMode, how:howEl.value, why:whyEl.value}));}catch(e){}
     }
 
     function loadAll(){
       try{
-        var saved = localStorage.getItem("thesisPyramid_game_v1");
+        var saved = localStorage.getItem("thesisStatementBuilder_v4") || localStorage.getItem("thesisStatementBuilder_v3") || localStorage.getItem("thesisStatementBuilder_v2") || localStorage.getItem("thesisPyramid_game_v1");
         if(!saved) return;
         var data = JSON.parse(saved);
         topicEl.value = data.topic || "";
-        whatEl.value  = data.what  || "";
-        howEl.value   = data.how   || "";
-        whyEl.value   = data.why   || "";
+        whatOverviewEl.value = data.whatOverview || data.what || "";
+        whatVerbEl.value = data.whatVerb || "";
+        selectedWhatMode = data.selectedWhatMode || "overview";
+        syncSelectedWhat();
+        howEl.value = data.how || "";
+        whyEl.value = data.why || "";
       }catch(e){}
     }
 
-    // Copy (Safari-safe)
-    function copyText(text){
-      // Try modern clipboard first
+    function copyText(text, successMessage){
       if(navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(text).then(function(){
-          showToast("Copied for Canvas!");
-        }).catch(function(){
-          fallbackCopy(text);
-        });
-      }else{
-        fallbackCopy(text);
-      }
+        navigator.clipboard.writeText(text).then(function(){showToast(successMessage || "Copied!");}).catch(function(){fallbackCopy(text, successMessage);});
+      }else fallbackCopy(text, successMessage);
     }
 
-    function fallbackCopy(text){
+    function fallbackCopy(text, successMessage){
       var temp = document.createElement("textarea");
       temp.value = text;
       document.body.appendChild(temp);
       temp.select();
-      try{
-        document.execCommand("copy");
-        showToast("Copied!");
-      }catch(e){
-        showToast("Copy failed — select & copy manually");
-      }
+      try{document.execCommand("copy"); showToast(successMessage || "Copied!");}
+      catch(e){showToast("Copy failed. Select and copy manually.");}
       temp.remove();
     }
 
-    copyBtn.addEventListener("click", function(){
-      var topic = cleanSentence(topicEl.value) || "(no topic entered)";
-      var w = cleanSentence(whatEl.value) || "________";
-      var h = cleanSentence(howEl.value)  || "__________________________";
-      var y = cleanSentence(whyEl.value)  || "__________________________";
-      var thesis = buildThesis(whatEl.value, howEl.value, whyEl.value);
-
-      var text =
-"Thesis Statement Practice\n\n" +
-"Topic (career goal): " + topic + "\n\n" +
-"WHAT: " + (/^this essay will/i.test(w) ? w : ("This essay will " + w)) + ".\n" +
-"HOW: "  + (/^by\\s/i.test(h) ? h : ("by " + h)) + ".\n" +
-"WHY: "  + y + "\n\n" +
-"Full thesis sentence:\n" + thesis;
-
-      copyText(text);
+    HOW_STARTERS.forEach(function(starter){
+      document.getElementById("howButtons").appendChild(makeStarterButton(starter, howEl, starter));
     });
+
+    wrongStarterCard.addEventListener("click", showNoFirstPersonWarning);
+    rightStarterCard.addEventListener("click", showCorrectStarterReminder);
+
+    copyBtn.addEventListener("click", function(){copyText(buildThesis(whatEl.value, howEl.value, whyEl.value), "Thesis copied!");});
+    copySubmissionBtn.addEventListener("click", function(){copyText(buildSubmission(), "Submission copied!");});
+    printBtn.addEventListener("click", function(){window.print();});
 
     document.getElementById("resetBtn").addEventListener("click", function(){
       topicEl.value = "";
       whatEl.value = "";
+      whatOverviewEl.value = "";
+      whatVerbEl.value = "";
+      selectedWhatMode = "overview";
       howEl.value = "";
       whyEl.value = "";
-      try{ localStorage.removeItem("thesisPyramid_game_v1"); }catch(e){}
+      try{
+        localStorage.removeItem("thesisStatementBuilder_v4");
+        localStorage.removeItem("thesisStatementBuilder_v3");
+        localStorage.removeItem("thesisStatementBuilder_v2");
+        localStorage.removeItem("thesisPyramid_game_v1");
+      }catch(e){}
       updateAll();
-      showToast("Reset");
+      showToast("Reset complete");
     });
 
-    document.getElementById("loadExample").addEventListener("click", function(){
-      topicEl.value = "EMT / paramedic";
-      whatEl.value = "provide an overview of the path to becoming an EMT";
-      howEl.value = "by describing education requirements, state licensing steps, and current job expectations";
-      whyEl.value = "so that a student can understand what they need to do after an AA/transfer program to qualify for entry-level jobs";
+    useOverviewBtn.addEventListener("click", function(){
+      selectedWhatMode = "overview";
       updateAll();
       saveAll();
-      showToast("Example loaded");
+      showToast("Overview WHAT selected");
     });
 
-    [topicEl, whatEl, howEl, whyEl].forEach(function(el){
-      el.addEventListener("input", function(){
-        updateAll();
-        saveAll();
-      });
+    useVerbBtn.addEventListener("click", function(){
+      selectedWhatMode = "verb";
+      updateAll();
+      saveAll();
+      showToast("Stronger verb WHAT selected");
     });
 
-    // Init
+    [topicEl, whatOverviewEl, whatVerbEl, howEl, whyEl].forEach(function(el){
+      el.addEventListener("input", function(){updateAll(); saveAll();});
+    });
+
     loadAll();
     updateAll();
   </script>
