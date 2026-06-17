@@ -515,6 +515,166 @@
       .submission-box{border:none; padding:0; margin:0; background:#fff;}
       .submission-box pre{font-family:Georgia, "Times New Roman", serif; font-size:12pt; line-height:1.5;}
     }
+
+    /* Green River Toolkit Work Hub updates */
+    :root{
+      --cream:#eef5ef;
+      --paper:#ffffff;
+      --paper-2:#f6faf7;
+      --ink:#102820;
+      --muted:#51645e;
+      --green:#003c3c;
+      --green-2:#00543d;
+      --green-3:#0f6b4f;
+      --green-soft:rgba(0,84,61,0.10);
+      --accent:#f4c542;
+      --line:rgba(16,40,32,0.16);
+      --shadow:0 22px 60px rgba(0,60,60,0.13);
+      --radius:28px;
+      --field:#fbfefc;
+      --bg:#eef5ef;
+      --border:rgba(16,40,32,0.16);
+      --plum:#00543d;
+      --plum-dark:#003c3c;
+      --plum-soft:rgba(0,84,61,0.10);
+      --clay:#0f6b4f;
+      --clay-soft:#e6f1eb;
+      --sage:#00543d;
+      --sage-soft:#e7f1ea;
+      --surface:#ffffff;
+      --surface-strong:#ffffff;
+      --surface-soft:#f6faf7;
+      --hero-bg:linear-gradient(135deg,#ffffff,#f6faf7);
+      --input-bg:#fbfefc;
+      --focus:rgba(15,107,79,.24);
+      --small-shadow:0 14px 34px rgba(0,60,60,.10);
+      --warn:#8b3a2b;
+      --warn-soft:#fff1ee;
+    }
+
+    body{
+      background:linear-gradient(180deg,var(--cream) 0%, #f6faf7 55%, #ffffff 100%) !important;
+      color:var(--ink);
+    }
+
+    .topbar{
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      flex-wrap:wrap;
+      padding:18px 0 0;
+    }
+
+    .hub-mark{
+      background:var(--paper);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:12px 16px;
+      box-shadow:var(--small-shadow);
+      max-width:520px;
+    }
+
+    .hub-mark strong{display:block; color:var(--green); font-size:1rem; line-height:1.2;}
+    .hub-mark span{display:block; color:var(--muted); font-size:.9rem; line-height:1.3; margin-top:3px;}
+    .top-actions,.modal-actions{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+
+    .hero,.card,.step-card,.side-card{
+      border-color:var(--line) !important;
+      background:var(--paper) !important;
+      box-shadow:var(--shadow);
+    }
+
+    .hero{border-radius:32px;}
+    .hero:before{background:rgba(0,84,61,.08);}
+    h1,h2,h3,.frame-chip strong,.try-card strong,.piece strong,summary{color:var(--green) !important;}
+    .eyebrow,.step-kicker,.mini-example .label,.flag{color:var(--green-2) !important;}
+    .sub,.plain-help,.input-help,.piece p,.hint,.tiny,.status,.frame-chip span{color:var(--muted) !important;}
+    .frame-chip,.choice-box,.try-card,.piece,.meter,details,.mini-example,.finalBox,.submission-box,.framed-input,input[type="text"],textarea{
+      border-color:var(--line) !important;
+      background:var(--paper-2) !important;
+    }
+
+    .toolkit-note{
+      position:relative;
+      z-index:1;
+      margin-top:22px;
+      max-width:820px;
+      background:var(--green-soft);
+      border-left:5px solid var(--green-2);
+      border-radius:18px;
+      padding:16px 18px;
+      color:var(--ink);
+      font-size:1rem;
+    }
+
+    .btn,.theme-toggle{
+      border-radius:999px;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:44px;
+    }
+
+    .btn.primary,.use-choice.active{
+      background:var(--green) !important;
+      color:#ffffff !important;
+      border-color:var(--green) !important;
+    }
+
+    .btn.secondary,.use-choice{
+      background:#ffffff !important;
+      color:var(--green) !important;
+      border-color:var(--line) !important;
+    }
+
+    .btn.secondary:hover,.btn.primary:hover{box-shadow:0 14px 26px rgba(0,60,60,.16);}
+    .frame-prefix,.verb-chip{background:var(--green-soft) !important; color:var(--green) !important;}
+    .bar{background:rgba(16,40,32,.12);}
+    .fill{background:linear-gradient(90deg,var(--green),var(--green-2),var(--green-3));}
+    .piece.what,.piece.how,.piece.why{border-left-color:var(--green-2);}
+
+    .save-modal.hidden{display:none !important;}
+    .save-modal{
+      position:fixed;
+      inset:0;
+      z-index:1000;
+      display:grid;
+      place-items:center;
+      padding:24px;
+    }
+    .save-modal-backdrop{position:absolute; inset:0; background:rgba(16,40,32,.62);}
+    .save-modal-card{
+      position:relative;
+      width:min(760px, calc(100vw - 34px));
+      max-height:calc(100vh - 34px);
+      overflow:auto;
+      background:#ffffff;
+      color:var(--ink);
+      border:1px solid var(--line);
+      border-radius:32px;
+      box-shadow:0 30px 90px rgba(0,0,0,.28);
+      padding:clamp(26px,5vw,48px);
+    }
+    .save-modal-card h2{font-size:clamp(2.1rem,5vw,4rem); margin-bottom:18px;}
+    .save-modal-card p{font-size:1.08rem; color:var(--ink);}
+    .modal-reminder{
+      margin-top:22px;
+      background:var(--green-soft);
+      border-left:5px solid var(--green-2);
+      border-radius:18px;
+      padding:14px 16px;
+    }
+
+    @media print{
+      body{background:#fff !important; padding:0; color:#000;}
+      .hero,.builder > .step-card,.side-card,.toast,.no-print,.save-modal,.final-card{display:none !important;}
+      .submission-card{display:block !important; border:none !important; box-shadow:none !important; padding:0 !important; margin:0 !important; background:#fff !important;}
+      .submission-card .plain-help,.submission-card .step-kicker,.submission-card h3,.submission-card .row{display:none !important;}
+      .submission-box{border:none !important; padding:0 !important; margin:0 !important; background:#fff !important;}
+      .submission-box pre{white-space:pre-wrap !important; overflow:visible !important; word-break:break-word !important; font-family:Georgia,"Times New Roman",serif; font-size:12pt; line-height:1.5;}
+    }
+
   </style>
 </head>
 <body>
@@ -522,12 +682,23 @@
 
   <div class="wrap">
     <div class="topbar no-print">
-      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false">Dark mode</button>
+      <div class="hub-mark" aria-label="Toolkit Work Hub connection">
+        <strong>English 101/117 Toolkit Work Hub</strong>
+        <span>Open toolkit workpages here. Save unfinished work in your own Google Doc.</span>
+      </div>
+      <div class="top-actions">
+        <button class="btn primary save-unfinished-btn" type="button">Save Unfinished Work for Later</button>
+        <button class="btn secondary" id="restoreSavedBtn" type="button">Restore Saved Work</button>
+        <a class="btn secondary" href="https://engl101practicepages.github.io/AssignmentWorkHub/">Return to Toolkit Work Hub</a>
+      </div>
     </div>
     <header class="hero">
-      <p class="eyebrow">ENG 101 Practice Page</p>
+      <p class="eyebrow">ENGL 101/117 Toolkit Workpage</p>
       <h1>Thesis Statement Builder</h1>
       <p class="sub">Build one thesis sentence using this frame: <strong>This essay will</strong> + <strong>by</strong> + <strong>so that</strong>. Use your own career field. Do not use first person.</p>
+      <div class="toolkit-note">
+        Use this toolkit workpage to build your thesis. Save unfinished work for later in your Google Doc. When your work is finished, save it as a PDF and submit it in Canvas.
+      </div>
       <div class="frame-strip" aria-label="Required thesis frame">
         <div class="frame-chip"><strong>WHAT</strong><span>This essay will explain what?</span></div>
         <div class="frame-chip"><strong>HOW</strong><span>By covering which 2 or 3 research areas?</span></div>
@@ -671,7 +842,6 @@
           <div class="errorBanner" id="exampleWarning">Copied example wording is not allowed.</div>
           <div class="row no-print">
             <button class="btn primary" id="copyBtn" type="button" disabled>Copy thesis sentence (locked)</button>
-            <button class="btn" id="resetBtn" type="button">Reset</button>
           </div>
           <details class="no-print">
             <summary>Why no “I” or “my”?</summary>
@@ -682,13 +852,14 @@
         <section class="card submission-card" aria-label="Canvas submission output">
           <p class="step-kicker">Canvas submission</p>
           <h3>What to submit</h3>
-          <p class="plain-help">Copy this into Canvas when it unlocks.</p>
+          <p class="plain-help">When your thesis is finished, save this as a PDF and submit it in Canvas. Google Docs is only for unfinished work you need to return to later.</p>
           <div class="submission-box" role="region" aria-label="Submission preview">
             <pre id="submissionPreview">Complete the thesis builder above. Your submission will appear here.</pre>
           </div>
           <div class="row no-print">
             <button class="btn primary" id="copySubmissionBtn" type="button" disabled>Copy submission (locked)</button>
-            <button class="btn secondary" id="printBtn" type="button" disabled>Print / Save as PDF</button>
+            <button class="btn secondary" id="printBtn" type="button" disabled>Save Finished Work as PDF</button>
+            <button class="btn primary save-unfinished-btn" type="button">Save Unfinished Work for Later</button>
           </div>
         </section>
       </section>
@@ -714,34 +885,24 @@
     </main>
   </div>
 
+
+  <div class="save-modal hidden" id="saveModal" aria-hidden="true">
+    <div class="save-modal-backdrop" data-close-save-modal></div>
+    <div class="save-modal-card" role="dialog" aria-modal="true" aria-labelledby="saveModalTitle" tabindex="-1">
+      <p class="step-kicker">Save unfinished work</p>
+      <h2 id="saveModalTitle">Now save it in your Google Doc.</h2>
+      <p>Your unfinished work has been copied. Open the Toolkit Work Hub, then open your Google Doc Save Space and paste it there.</p>
+      <div class="modal-actions">
+        <a class="btn primary" href="https://engl101practicepages.github.io/AssignmentWorkHub/">Go to Toolkit Work Hub</a>
+        <button class="btn secondary" type="button" data-close-save-modal>Stay on this page</button>
+      </div>
+      <p class="modal-reminder"><strong>Reminder:</strong> Google Docs is for unfinished work you need to return to later. Finished work should be saved as a PDF and submitted in Canvas.</p>
+    </div>
+  </div>
+
   <div class="toast" id="toast">Copied!</div>
 
   <script>
-    var themeToggle = document.getElementById("themeToggle");
-
-    function applyTheme(theme){
-      document.documentElement.setAttribute("data-theme", theme);
-      themeToggle.textContent = theme === "dark" ? "Light mode" : "Dark mode";
-      themeToggle.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
-    }
-
-    function getPreferredTheme(){
-      try{
-        var saved = localStorage.getItem("thesisBuilder_theme");
-        if(saved === "light" || saved === "dark") return saved;
-      }catch(e){}
-      if(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) return "dark";
-      return "light";
-    }
-
-    applyTheme(getPreferredTheme());
-
-    themeToggle.addEventListener("click", function(){
-      var current = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
-      var next = current === "dark" ? "light" : "dark";
-      applyTheme(next);
-      try{localStorage.setItem("thesisBuilder_theme", next);}catch(e){}
-    });
 
     var HOW_STARTERS = ["outlining", "describing", "explaining", "comparing", "examining"];
     var VAGUE_WORDS = ["things", "stuff", "a lot", "lots", "many", "good", "bad", "nice", "interesting", "various", "different", "some"];
@@ -1127,6 +1288,79 @@ ${buildThesis(whatEl.value, howEl.value, whyEl.value)}`;
       temp.remove();
     }
 
+
+    var saveModal = document.getElementById("saveModal");
+    var lastFocusedBeforeSaveModal = null;
+
+    function buildUnfinishedWorkText(){
+      return `Thesis Statement Builder — Unfinished Work
+
+Reminder: Google Docs is for unfinished work you need to return to later. Finished work should be saved as a PDF and submitted in Canvas.
+
+Topic:
+${cleanSentence(topicEl.value) || "(not entered yet)"}
+
+WHAT Version A:
+${cleanSentence(whatOverviewEl.value) || "(not entered yet)"}
+
+WHAT Version B:
+${cleanSentence(whatVerbEl.value) || "(not entered yet)"}
+
+Selected WHAT:
+${selectedWhatMode === "verb" ? "Version B" : "Version A"}
+
+HOW:
+${cleanSentence(howEl.value) || "(not entered yet)"}
+
+WHY:
+${cleanSentence(whyEl.value) || "(not entered yet)"}
+
+Current full thesis sentence:
+${buildThesis(whatEl.value, howEl.value, whyEl.value)}`;
+    }
+
+    function openSaveModal(){
+      lastFocusedBeforeSaveModal = document.activeElement;
+      saveModal.classList.remove("hidden");
+      saveModal.setAttribute("aria-hidden", "false");
+      var card = saveModal.querySelector(".save-modal-card");
+      if(card) card.focus();
+    }
+
+    function closeSaveModal(){
+      saveModal.classList.add("hidden");
+      saveModal.setAttribute("aria-hidden", "true");
+      if(lastFocusedBeforeSaveModal && lastFocusedBeforeSaveModal.focus) lastFocusedBeforeSaveModal.focus();
+    }
+
+    function saveUnfinishedWork(){
+      saveAll();
+      copyText(buildUnfinishedWorkText(), "Unfinished work copied!");
+      openSaveModal();
+    }
+
+    document.querySelectorAll(".save-unfinished-btn").forEach(function(btn){
+      btn.addEventListener("click", saveUnfinishedWork);
+    });
+
+    document.querySelectorAll("[data-close-save-modal]").forEach(function(btn){
+      btn.addEventListener("click", closeSaveModal);
+    });
+
+    document.addEventListener("keydown", function(e){
+      if(e.key === "Escape" && !saveModal.classList.contains("hidden")) closeSaveModal();
+    });
+
+
+    var restoreSavedBtn = document.getElementById("restoreSavedBtn");
+    if(restoreSavedBtn){
+      restoreSavedBtn.addEventListener("click", function(){
+        loadAll();
+        updateAll();
+        showToast("Saved work restored");
+      });
+    }
+
     HOW_STARTERS.forEach(function(starter){
       document.getElementById("howButtons").appendChild(makeStarterButton(starter, howEl, starter));
     });
@@ -1138,23 +1372,6 @@ ${buildThesis(whatEl.value, howEl.value, whyEl.value)}`;
     copySubmissionBtn.addEventListener("click", function(){copyText(buildSubmission(), "Submission copied!");});
     printBtn.addEventListener("click", function(){window.print();});
 
-    document.getElementById("resetBtn").addEventListener("click", function(){
-      topicEl.value = "";
-      whatEl.value = "";
-      whatOverviewEl.value = "";
-      whatVerbEl.value = "";
-      selectedWhatMode = "overview";
-      howEl.value = "";
-      whyEl.value = "";
-      try{
-        localStorage.removeItem("thesisStatementBuilder_v4");
-        localStorage.removeItem("thesisStatementBuilder_v3");
-        localStorage.removeItem("thesisStatementBuilder_v2");
-        localStorage.removeItem("thesisPyramid_game_v1");
-      }catch(e){}
-      updateAll();
-      showToast("Reset complete");
-    });
 
     useOverviewBtn.addEventListener("click", function(){
       selectedWhatMode = "overview";
