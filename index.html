@@ -1,0 +1,1409 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Thesis Statement Builder</title>
+  <style>
+    :root{
+      --bg:#f7efe9;
+      --paper:#fffaf4;
+      --ink:#241821;
+      --muted:#6b5b65;
+      --border:#dbc7d2;
+      --plum:#5b234e;
+      --plum-dark:#3a1834;
+      --plum-soft:#f0dfea;
+      --clay:#9b5b3e;
+      --clay-soft:#f5e4d7;
+      --sage:#687864;
+      --sage-soft:#e7eadf;
+      --cream:#fffdf8;
+      --warn:#8a2f24;
+      --warn-soft:#f8ded8;
+      --shadow:0 22px 60px rgba(65, 33, 55, .16);
+      --small-shadow:0 12px 28px rgba(65, 33, 55, .10);
+      --surface:#fffaf4;
+      --surface-strong:#fffefa;
+      --surface-soft:rgba(255,253,248,.72);
+      --hero-bg:linear-gradient(135deg, rgba(255,250,244,.97), rgba(244,230,238,.95));
+      --input-bg:#fffefa;
+      --focus:rgba(91,35,78,.18);
+      --radius:28px;
+    }
+
+    html[data-theme="dark"]{
+      --bg:#1c141b;
+      --paper:#241821;
+      --ink:#fff7ef;
+      --muted:#d9c7d1;
+      --border:#5f4357;
+      --plum:#e7b8dc;
+      --plum-dark:#fff1fa;
+      --plum-soft:#3b2637;
+      --clay:#e4a37f;
+      --clay-soft:#3a2721;
+      --sage:#b9c9ad;
+      --sage-soft:#293327;
+      --cream:#2a1e27;
+      --warn:#ffb3a7;
+      --warn-soft:#45231f;
+      --shadow:0 22px 60px rgba(0,0,0,.34);
+      --small-shadow:0 12px 28px rgba(0,0,0,.26);
+      --surface:#241821;
+      --surface-strong:#302230;
+      --surface-soft:rgba(48,34,48,.78);
+      --hero-bg:linear-gradient(135deg, rgba(42,29,40,.98), rgba(58,38,55,.95));
+      --input-bg:#302230;
+      --focus:rgba(231,184,220,.28);
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+
+    body{
+      margin:0;
+      font-family:ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 460px at 10% -10%, rgba(91,35,78,.22), transparent 60%),
+        radial-gradient(760px 440px at 90% 8%, rgba(155,91,62,.16), transparent 58%),
+        linear-gradient(180deg, #fbf4ee 0%, var(--bg) 54%, #f3e5dc 100%);
+      padding:0 18px 72px;
+      font-size:19px;
+      line-height:1.55;
+      transition:background .25s ease, color .25s ease;
+    }
+
+    html[data-theme="dark"] body{
+      background:
+        radial-gradient(900px 460px at 10% -10%, rgba(231,184,220,.14), transparent 60%),
+        radial-gradient(760px 440px at 90% 8%, rgba(228,163,127,.11), transparent 58%),
+        linear-gradient(180deg, #171018 0%, var(--bg) 54%, #211720 100%);
+    }
+
+    .skip-link{position:absolute; left:-999px; top:12px; background:var(--ink); color:#fff; padding:10px 14px; border-radius:999px; z-index:20;}
+    .skip-link:focus{left:16px}
+    .wrap{max-width:1120px; margin:0 auto;}
+
+    .topbar{
+      display:flex;
+      justify-content:flex-end;
+      align-items:center;
+      gap:10px;
+      padding:18px 0 0;
+    }
+
+    .theme-toggle{
+      appearance:none;
+      border:1px solid var(--border);
+      background:rgba(255,253,248,.82);
+      color:var(--ink);
+      border-radius:999px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-weight:900;
+      font-size:.9rem;
+      box-shadow:var(--small-shadow);
+    }
+
+    html[data-theme="dark"] .theme-toggle{background:var(--surface-strong); color:var(--ink);} 
+
+    html[data-theme="dark"] .mini-example,
+    html[data-theme="dark"] .finalBox,
+    html[data-theme="dark"] .submission-box{
+      background:linear-gradient(135deg, var(--surface-strong), var(--surface));
+    }
+
+    html[data-theme="dark"] .do-not-copy,
+    html[data-theme="dark"] .lockBanner,
+    html[data-theme="dark"] .errorBanner,
+    html[data-theme="dark"] .big-warning,
+    html[data-theme="dark"] .starter-card.wrong,
+    html[data-theme="dark"] .flag.blocked{
+      color:#ffe9e4;
+      background:#4b241f;
+      border-color:#a85d52;
+    }
+
+    html[data-theme="dark"] .btn.primary,
+    html[data-theme="dark"] .use-choice.active{
+      background:linear-gradient(135deg, #8f4e82, #e7b8dc);
+      color:#1c141b;
+      border-color:#e7b8dc;
+    }
+
+    html[data-theme="dark"] textarea::placeholder,
+    html[data-theme="dark"] input::placeholder{
+      color:#bdaab6;
+      opacity:1;
+    } 
+    .theme-toggle:focus-visible{outline:4px solid rgba(91,35,78,.22); outline-offset:3px;}
+
+    .hero{
+      margin:26px 0 30px;
+      padding:clamp(28px, 6vw, 64px);
+      border-radius:36px;
+      border:1px solid rgba(219,199,210,.96);
+      background:var(--hero-bg);
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero:before{
+      content:"";
+      position:absolute;
+      right:-110px;
+      top:-120px;
+      width:340px;
+      height:340px;
+      border-radius:999px;
+      background:rgba(91,35,78,.12);
+    }
+
+    .eyebrow{
+      margin:0 0 14px;
+      color:var(--plum);
+      font-size:.82rem;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      font-weight:900;
+      position:relative;
+      z-index:1;
+    }
+
+    h1{
+      margin:0;
+      max-width:820px;
+      font-family:Georgia, "Times New Roman", serif;
+      font-size:clamp(3.1rem, 8vw, 6.8rem);
+      line-height:.9;
+      letter-spacing:-.07em;
+      font-weight:750;
+      color:var(--plum-dark);
+      position:relative;
+      z-index:1;
+    }
+
+    .sub{
+      max-width:760px;
+      margin:24px 0 0;
+      color:var(--muted);
+      font-size:1.15rem;
+      position:relative;
+      z-index:1;
+    }
+
+    .frame-strip{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:12px;
+      margin-top:28px;
+      position:relative;
+      z-index:1;
+    }
+
+    @media (max-width:760px){.frame-strip{grid-template-columns:1fr;}}
+
+    .frame-chip{
+      background:var(--surface-soft);
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:16px;
+      min-height:110px;
+    }
+
+    .frame-chip strong{
+      display:block;
+      font-family:Georgia, "Times New Roman", serif;
+      font-size:1.7rem;
+      line-height:1;
+      color:var(--plum-dark);
+      margin-bottom:8px;
+    }
+
+    .frame-chip span{display:block; color:var(--muted); font-size:.95rem; line-height:1.35;}
+
+    main.layout{
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) 340px;
+      gap:24px;
+      align-items:start;
+    }
+
+    @media (max-width:980px){main.layout{grid-template-columns:1fr;}}
+
+    .card{
+      background:var(--surface);
+      border:1px solid rgba(219,199,210,.96);
+      border-radius:var(--radius);
+      box-shadow:var(--small-shadow);
+      padding:clamp(22px, 4vw, 36px);
+    }
+
+    .builder{display:grid; gap:34px;}
+
+    .step-card{
+      background:var(--surface);
+      border:1px solid rgba(219,199,210,.96);
+      border-radius:30px;
+      padding:clamp(22px, 4vw, 36px);
+      box-shadow:var(--small-shadow);
+    }
+
+    .step-card.locked{opacity:.58; filter:saturate(.72);}
+    .step-card.locked input, .step-card.locked textarea, .step-card.locked button{pointer-events:none;}
+    .step-card.revision-needed{border-color:rgba(138,47,36,.45); box-shadow:0 0 0 4px rgba(138,47,36,.08), var(--small-shadow);}
+
+    .step-kicker{
+      margin:0 0 8px;
+      color:var(--plum);
+      font-size:.82rem;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      font-weight:900;
+    }
+
+    h2{
+      margin:0;
+      font-family:Georgia, "Times New Roman", serif;
+      font-size:clamp(2.3rem, 5vw, 4.2rem);
+      line-height:.95;
+      letter-spacing:-.055em;
+      color:var(--plum-dark);
+    }
+
+    h3{
+      margin:0;
+      font-family:Georgia, "Times New Roman", serif;
+      font-size:clamp(1.55rem, 3vw, 2.3rem);
+      line-height:1;
+      letter-spacing:-.035em;
+      color:var(--plum-dark);
+    }
+
+    .plain-help{margin:14px 0 0; color:var(--muted); font-size:1rem; max-width:760px;}
+
+    .mini-example{
+      margin:22px 0;
+      border-radius:24px;
+      border:1px solid rgba(91,35,78,.18);
+      background:linear-gradient(135deg, var(--plum-soft), #fffaf4 72%);
+      padding:18px;
+    }
+
+    .mini-example .label{
+      display:block;
+      margin:0 0 8px;
+      color:var(--plum);
+      font-size:.78rem;
+      text-transform:uppercase;
+      letter-spacing:.13em;
+      font-weight:900;
+    }
+
+    .example-text{
+      user-select:none;
+      margin:0;
+      color:var(--ink);
+      font-size:1.08rem;
+      line-height:1.38;
+    }
+
+    .do-not-copy{
+      display:inline-block;
+      margin-top:12px;
+      color:#672117;
+      background:var(--warn-soft);
+      border:1px solid rgba(138,47,36,.22);
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:.78rem;
+      font-weight:900;
+    }
+
+    label{
+      display:block;
+      font-weight:900;
+      margin:0 0 10px;
+      font-size:1.02rem;
+      color:var(--ink);
+    }
+
+    .input-help{margin:0 0 12px; color:var(--muted); font-size:.95rem;}
+
+    .framed-input{
+      border:1px solid var(--border);
+      border-radius:24px;
+      background:var(--input-bg);
+      overflow:hidden;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.12);
+    }
+
+    .frame-prefix{
+      display:block;
+      padding:12px 16px;
+      background:var(--plum-soft);
+      color:var(--plum-dark);
+      font-family:Georgia, "Times New Roman", serif;
+      font-size:1.45rem;
+      line-height:1;
+      font-weight:750;
+      border-bottom:1px solid var(--border);
+    }
+
+    .framed-input textarea{
+      border:0;
+      border-radius:0;
+      box-shadow:none;
+      background:var(--input-bg);
+    }
+
+    .framed-input:focus-within{
+      outline:4px solid var(--focus);
+      outline-offset:3px;
+      border-color:rgba(91,35,78,.65);
+    }
+
+    input[type="text"], textarea{
+      width:100%;
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:16px 17px;
+      font:inherit;
+      font-size:1.04rem;
+      outline:none;
+      color:var(--ink);
+      background:var(--input-bg);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.12);
+    }
+
+    textarea{min-height:122px; resize:vertical;}
+    textarea.small-textarea{min-height:82px;}
+    .choice-panel{display:grid; gap:22px; margin-top:22px;}
+    .choice-box{border:1px solid rgba(219,199,210,.96); background:var(--surface-soft); border-radius:28px; padding:22px;}
+    .choice-box h3{font-size:clamp(1.45rem, 3vw, 2.2rem); margin-bottom:10px;}
+    .choice-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;}
+    .use-choice{border-color:var(--plum); background:var(--plum-soft); color:var(--plum-dark);}
+    .use-choice.active{background:linear-gradient(135deg, var(--plum), var(--plum-dark)); color:#fff; border-color:var(--plum-dark);}
+    .selected-note{display:none; margin-top:10px; color:var(--plum); font-weight:900; font-size:.88rem;}
+    .selected-note.show{display:block;}
+    .try-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:16px 0;}
+    @media (max-width:760px){.try-grid{grid-template-columns:1fr;}}
+    .try-card{border:1px solid rgba(219,199,210,.96); background:var(--input-bg); border-radius:22px; padding:16px;}
+    .try-card strong{display:block; color:var(--plum-dark); font-family:Georgia, "Times New Roman", serif; font-size:1.35rem; line-height:1; margin-bottom:8px;}
+    .try-card p{margin:0 0 12px; color:var(--muted); font-size:.95rem;}
+    .verb-bank{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 14px;}
+    .verb-chip{border:1px solid var(--border); background:var(--plum-soft); color:var(--plum-dark); border-radius:999px; padding:6px 10px; font-size:.86rem; font-weight:900;}
+    .reflect-box{border:1px dashed rgba(91,35,78,.28); background:rgba(240,223,234,.44); border-radius:22px; padding:16px; margin-top:18px;}
+    .reflect-box p{margin:0 0 10px; color:var(--muted); font-size:.95rem;}
+    input:focus, textarea:focus, button:focus-visible{outline:4px solid var(--focus); outline-offset:3px; border-color:rgba(91,35,78,.65);}
+    .field-error{border-color:rgba(138,47,36,.8) !important; background:var(--warn-soft) !important;}
+
+    .starter-buttons{display:flex; gap:10px; flex-wrap:wrap; margin:0 0 14px;}
+    .btn.trick{border-color:rgba(138,47,36,.35); background:var(--warn-soft); color:#672117;}
+    .big-warning{
+      display:none;
+      margin:18px 0 0;
+      border-radius:26px;
+      border:2px solid rgba(138,47,36,.38);
+      background:linear-gradient(135deg, #f8ded8, var(--warn-soft));
+      color:#672117;
+      padding:22px;
+      box-shadow:0 18px 34px rgba(138,47,36,.13);
+    }
+    .big-warning.show{display:block;}
+    .big-warning strong{
+      display:block;
+      font-family:Georgia, "Times New Roman", serif;
+      font-size:clamp(2rem, 5vw, 4rem);
+      line-height:.9;
+      letter-spacing:-.055em;
+      margin-bottom:10px;
+    }
+    .big-warning p{margin:0; font-size:1rem; line-height:1.42;}
+    .starter-lesson{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin:14px 0 16px;
+    }
+    @media (max-width:680px){.starter-lesson{grid-template-columns:1fr;}}
+    .starter-card{
+      border:1px solid var(--border);
+      border-radius:20px;
+      background:var(--input-bg);
+      padding:14px;
+    }
+    .starter-card.wrong{border-color:rgba(138,47,36,.32); background:var(--warn-soft); color:#672117;}
+    .starter-card.right{border-color:rgba(91,35,78,.25); background:var(--plum-soft); color:var(--plum-dark);}
+    .starter-card span{display:block; font-size:.76rem; letter-spacing:.11em; text-transform:uppercase; font-weight:900; margin-bottom:6px;}
+    .starter-card strong{display:block; font-family:Georgia, "Times New Roman", serif; font-size:1.45rem; line-height:1;}
+    .btn{
+      appearance:none;
+      border:1px solid var(--border);
+      background:var(--input-bg);
+      color:var(--ink);
+      padding:11px 15px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:900;
+      font-size:.92rem;
+      transition:transform .08s ease, box-shadow .18s ease;
+    }
+    .btn:hover{transform:translateY(-1px); box-shadow:0 12px 24px rgba(65,33,55,.13);}
+    .btn:active{transform:translateY(0);}
+    .btn.primary{border-color:var(--plum-dark); background:linear-gradient(135deg, var(--plum), var(--plum-dark)); color:#fff;}
+    .btn.secondary{background:var(--sage-soft); border-color:#c6d1bd; color:#31402e;}
+    .btn:disabled{cursor:not-allowed; opacity:.48; transform:none; box-shadow:none;}
+
+    .lockBanner, .errorBanner{
+      margin:16px 0 0;
+      padding:12px 14px;
+      border-radius:18px;
+      border:1px solid rgba(138,47,36,.22);
+      background:var(--warn-soft);
+      color:#672117;
+      font-size:.92rem;
+      font-weight:850;
+    }
+    .errorBanner{display:none;}
+
+    .side-card{position:sticky; top:18px;}
+    @media (max-width:980px){.side-card{position:static;}}
+
+    .stack{display:grid; gap:14px; margin-top:18px;}
+    .piece{border-radius:22px; padding:16px; border:1px solid rgba(219,199,210,.96); background:var(--input-bg);}
+    .piece strong{display:block; font-family:Georgia, "Times New Roman", serif; font-size:1.7rem; line-height:1; color:var(--plum-dark); margin-bottom:8px;}
+    .piece p{margin:0; color:var(--muted); font-size:.95rem; line-height:1.38;}
+    .piece.what{border-left:8px solid var(--plum);}
+    .piece.how{border-left:8px solid var(--clay);}
+    .piece.why{border-left:8px solid var(--sage);}
+
+    .meter{margin-top:18px; padding:16px; border-radius:22px; border:1px solid rgba(219,199,210,.96); background:var(--surface-soft);}
+    .status{display:flex; justify-content:space-between; gap:12px; color:var(--muted); font-size:.92rem;}
+    .status b{color:var(--ink);}
+    .flag{padding:6px 10px; border-radius:999px; font-weight:900; font-size:.78rem; border:1px solid var(--border); background:var(--input-bg); color:var(--plum); white-space:nowrap;}
+    .flag.blocked{color:#672117; border-color:rgba(138,47,36,.3); background:var(--warn-soft);}
+    .bar{height:11px; background:rgba(36,24,33,.11); border-radius:999px; overflow:hidden; margin-top:12px;}
+    .fill{height:100%; width:0%; border-radius:999px; background:linear-gradient(90deg, var(--plum), var(--clay), var(--sage)); transition:width .25s ease;}
+    .hint{margin-top:14px; color:var(--muted); font-size:.92rem; line-height:1.42;}
+    .hint b{color:var(--ink);}
+
+    .final-card, .submission-card{margin-top:34px;}
+    .finalBox, .submission-box{border-radius:24px; border:1px solid rgba(91,35,78,.22); background:linear-gradient(180deg, #fffefa, var(--surface)); padding:18px; margin-top:18px;}
+    .finalBox pre, .submission-box pre{margin:0; white-space:pre-wrap; word-break:break-word; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:.96rem; line-height:1.48;}
+
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:16px;}
+    .tiny{color:var(--muted); font-size:.84rem;}
+    details{border:1px solid rgba(219,199,210,.96); background:var(--surface-soft); border-radius:22px; padding:14px 16px; margin-top:18px;}
+    summary{cursor:pointer; font-weight:900; color:var(--plum-dark);}
+    details p{color:var(--muted); margin:10px 0 0; font-size:.94rem;}
+
+    .toast{position:fixed; left:50%; bottom:18px; transform:translateX(-50%); background:rgba(36,24,33,.95); color:#fff; padding:10px 14px; border-radius:999px; font-size:.88rem; box-shadow:0 18px 34px rgba(36,24,33,.25); opacity:0; pointer-events:none; transition:opacity .2s ease, transform .2s ease; z-index:30;}
+    .toast.show{opacity:1; transform:translateX(-50%) translateY(-4px);}
+
+    @media print{
+      html[data-theme="dark"], html[data-theme="dark"] body{background:#fff !important; color:#000 !important;}
+      body{background:#fff; padding:0; color:#000;}
+      .hero, .builder, .side-card, .toast, .no-print{display:none !important;}
+      .wrap{max-width:none; margin:0;}
+      main.layout{display:block;}
+      .submission-card{display:block; border:none; box-shadow:none; padding:0; margin:0;}
+      .submission-card .plain-help{display:none;}
+      .submission-box{border:none; padding:0; margin:0; background:#fff;}
+      .submission-box pre{font-family:Georgia, "Times New Roman", serif; font-size:12pt; line-height:1.5;}
+    }
+
+    /* Green River Toolkit Work Hub updates */
+    :root{
+      --cream:#eef5ef;
+      --paper:#ffffff;
+      --paper-2:#f6faf7;
+      --ink:#102820;
+      --muted:#51645e;
+      --green:#003c3c;
+      --green-2:#00543d;
+      --green-3:#0f6b4f;
+      --green-soft:rgba(0,84,61,0.10);
+      --accent:#f4c542;
+      --line:rgba(16,40,32,0.16);
+      --shadow:0 22px 60px rgba(0,60,60,0.13);
+      --radius:28px;
+      --field:#fbfefc;
+      --bg:#eef5ef;
+      --border:rgba(16,40,32,0.16);
+      --plum:#00543d;
+      --plum-dark:#003c3c;
+      --plum-soft:rgba(0,84,61,0.10);
+      --clay:#0f6b4f;
+      --clay-soft:#e6f1eb;
+      --sage:#00543d;
+      --sage-soft:#e7f1ea;
+      --surface:#ffffff;
+      --surface-strong:#ffffff;
+      --surface-soft:#f6faf7;
+      --hero-bg:linear-gradient(135deg,#ffffff,#f6faf7);
+      --input-bg:#fbfefc;
+      --focus:rgba(15,107,79,.24);
+      --small-shadow:0 14px 34px rgba(0,60,60,.10);
+      --warn:#8b3a2b;
+      --warn-soft:#fff1ee;
+    }
+
+    body{
+      background:linear-gradient(180deg,var(--cream) 0%, #f6faf7 55%, #ffffff 100%) !important;
+      color:var(--ink);
+    }
+
+    .topbar{
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      flex-wrap:wrap;
+      padding:18px 0 0;
+    }
+
+    .hub-mark{
+      background:var(--paper);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:12px 16px;
+      box-shadow:var(--small-shadow);
+      max-width:520px;
+    }
+
+    .hub-mark strong{display:block; color:var(--green); font-size:1rem; line-height:1.2;}
+    .hub-mark span{display:block; color:var(--muted); font-size:.9rem; line-height:1.3; margin-top:3px;}
+    .top-actions,.modal-actions{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+
+    .hero,.card,.step-card,.side-card{
+      border-color:var(--line) !important;
+      background:var(--paper) !important;
+      box-shadow:var(--shadow);
+    }
+
+    .hero{border-radius:32px;}
+    .hero:before{background:rgba(0,84,61,.08);}
+    h1,h2,h3,.frame-chip strong,.try-card strong,.piece strong,summary{color:var(--green) !important;}
+    .eyebrow,.step-kicker,.mini-example .label,.flag{color:var(--green-2) !important;}
+    .sub,.plain-help,.input-help,.piece p,.hint,.tiny,.status,.frame-chip span{color:var(--muted) !important;}
+    .frame-chip,.choice-box,.try-card,.piece,.meter,details,.mini-example,.finalBox,.submission-box,.framed-input,input[type="text"],textarea{
+      border-color:var(--line) !important;
+      background:var(--paper-2) !important;
+    }
+
+    .toolkit-note{
+      position:relative;
+      z-index:1;
+      margin-top:22px;
+      max-width:820px;
+      background:var(--green-soft);
+      border-left:5px solid var(--green-2);
+      border-radius:18px;
+      padding:16px 18px;
+      color:var(--ink);
+      font-size:1rem;
+    }
+
+    .btn,.theme-toggle{
+      border-radius:999px;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:44px;
+    }
+
+    .btn.primary,.use-choice.active{
+      background:var(--green) !important;
+      color:#ffffff !important;
+      border-color:var(--green) !important;
+    }
+
+    .btn.secondary,.use-choice{
+      background:#ffffff !important;
+      color:var(--green) !important;
+      border-color:var(--line) !important;
+    }
+
+    .btn.secondary:hover,.btn.primary:hover{box-shadow:0 14px 26px rgba(0,60,60,.16);}
+    .frame-prefix,.verb-chip{background:var(--green-soft) !important; color:var(--green) !important;}
+    .bar{background:rgba(16,40,32,.12);}
+    .fill{background:linear-gradient(90deg,var(--green),var(--green-2),var(--green-3));}
+    .piece.what,.piece.how,.piece.why{border-left-color:var(--green-2);}
+
+    .save-modal.hidden{display:none !important;}
+    .save-modal{
+      position:fixed;
+      inset:0;
+      z-index:1000;
+      display:grid;
+      place-items:center;
+      padding:24px;
+    }
+    .save-modal-backdrop{position:absolute; inset:0; background:rgba(16,40,32,.62);}
+    .save-modal-card{
+      position:relative;
+      width:min(760px, calc(100vw - 34px));
+      max-height:calc(100vh - 34px);
+      overflow:auto;
+      background:#ffffff;
+      color:var(--ink);
+      border:1px solid var(--line);
+      border-radius:32px;
+      box-shadow:0 30px 90px rgba(0,0,0,.28);
+      padding:clamp(26px,5vw,48px);
+    }
+    .save-modal-card h2{font-size:clamp(2.1rem,5vw,4rem); margin-bottom:18px;}
+    .save-modal-card p{font-size:1.08rem; color:var(--ink);}
+    .modal-reminder{
+      margin-top:22px;
+      background:var(--green-soft);
+      border-left:5px solid var(--green-2);
+      border-radius:18px;
+      padding:14px 16px;
+    }
+
+    @media print{
+      body{background:#fff !important; padding:0; color:#000;}
+      .hero,.builder > .step-card,.side-card,.toast,.no-print,.save-modal,.final-card{display:none !important;}
+      .submission-card{display:block !important; border:none !important; box-shadow:none !important; padding:0 !important; margin:0 !important; background:#fff !important;}
+      .submission-card .plain-help,.submission-card .step-kicker,.submission-card h3,.submission-card .row{display:none !important;}
+      .submission-box{border:none !important; padding:0 !important; margin:0 !important; background:#fff !important;}
+      .submission-box pre{white-space:pre-wrap !important; overflow:visible !important; word-break:break-word !important; font-family:Georgia,"Times New Roman",serif; font-size:12pt; line-height:1.5;}
+    }
+
+
+    /* Clutter-reduction draft overrides */
+    body{font-size:18px;}
+    .wrap{max-width:980px;}
+    .topbar{align-items:center;}
+    .hub-mark{padding:10px 14px; max-width:360px;}
+    .hub-mark span{font-size:.84rem;}
+    .hero{margin:20px 0 22px; padding:clamp(24px, 4.5vw, 42px) !important;}
+    h1{font-size:clamp(2.8rem, 6vw, 5rem); max-width:760px;}
+    .sub{font-size:1.08rem; margin-top:18px;}
+    .toolkit-note{margin-top:16px; padding:13px 15px; font-size:.96rem;}
+    .frame-strip{display:none !important;}
+    main.layout{grid-template-columns:1fr; max-width:880px; margin:0 auto;}
+    .builder{gap:22px;}
+    .step-card,.card{padding:clamp(20px, 3vw, 30px);}
+    h2{font-size:clamp(2rem, 4vw, 3.3rem);}
+    .plain-help{font-size:.98rem; margin-top:10px;}
+    .mini-example{margin:16px 0; padding:14px 16px;}
+    .starter-lesson{display:none !important;}
+    .choice-panel{margin-top:16px; gap:16px;}
+    .choice-box{padding:18px;}
+    .try-grid{gap:12px;}
+    .try-card{padding:14px;}
+    .try-card p,.input-help{font-size:.92rem;}
+    .reflect-box{background:var(--paper-2); margin-top:12px; padding:13px 15px;}
+    .side-card{display:none !important;}
+    .final-card{display:none !important;}
+    .submission-card{margin-top:22px; border:3px solid var(--green-2) !important;}
+    .submission-card h3{font-size:clamp(1.9rem,4vw,3rem);}
+    .submission-box{font-size:1rem; min-height:190px;}
+    .row{margin-top:14px;}
+    .save-modal-card ol{margin:0 0 18px 1.2em; padding:0; color:var(--ink); font-size:1.05rem; line-height:1.55;}
+    @media (max-width:760px){.top-actions{width:100%;}.top-actions .btn{flex:1 1 100%;}.try-grid{grid-template-columns:1fr;}}
+
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#builder">Skip to thesis builder</a>
+
+  <div class="wrap">
+    <div class="topbar no-print">
+      <div class="hub-mark" aria-label="Toolkit Work Hub connection">
+        <strong>English 101/117 Toolkit Work Hub</strong>
+        <span>Thesis practice page</span>
+      </div>
+      <div class="top-actions">
+        <button class="btn primary save-unfinished-btn" type="button">Save Unfinished Work for Later</button>
+        <button class="btn secondary" id="restoreSavedBtn" type="button">Restore Saved Work</button>
+        <a class="btn secondary" href="https://engl101practicepages.github.io/AssignmentWorkHub/">Return to Toolkit Work Hub</a>
+      </div>
+    </div>
+    <header class="hero">
+      <p class="eyebrow">ENGL 101/117 Toolkit Workpage</p>
+      <h1>Thesis Statement Builder</h1>
+      <p class="sub">Build one thesis sentence: <strong>This essay will</strong> ___ <strong>by</strong> ___ <strong>so that</strong> ___. Use your own career field. Do not use first person.</p>
+      <div class="toolkit-note">
+        Use this page to practice. When finished, save as a PDF and submit in Canvas.
+      </div>
+      <div class="frame-strip" aria-label="Required thesis frame">
+        <div class="frame-chip"><strong>WHAT</strong><span>This essay will explain what?</span></div>
+        <div class="frame-chip"><strong>HOW</strong><span>By covering which 2 or 3 research areas?</span></div>
+        <div class="frame-chip"><strong>WHY</strong><span>So that the reader understands what?</span></div>
+      </div>
+    </header>
+
+    <main class="layout" id="builder">
+      <section class="builder" aria-label="Thesis builder form">
+        <div class="step-card">
+          <p class="step-kicker">Step 1</p>
+          <h2>Topic</h2>
+          <p class="plain-help">Name the career field you are researching. Use the career field, not “my career.”</p>
+          <div class="mini-example">
+            <span class="label">Possible career fields</span>
+            <p class="example-text">dental hygienist, electrician, nursing, software development, radiology technician</p>
+          </div>
+          <label for="topic">Your topic</label>
+          <input id="topic" type="text" placeholder="Example: radiology technician" />
+        </div>
+
+        <div class="step-card">
+          <p class="step-kicker">Step 2</p>
+          <h2>WHAT</h2>
+          <p class="plain-help">Choose what your essay will explain. Start with a verb that fits the kind of research essay you are writing.</p>
+          <div class="starter-lesson" aria-label="Thesis starter comparison">
+            <button class="starter-card wrong" id="wrongStarterCard" type="button">
+              <span>Do not use</span>
+              <strong>I will...</strong>
+            </button>
+            <button class="starter-card right" id="rightStarterCard" type="button">
+              <span>The thesis frame is</span>
+              <strong>This essay will...</strong>
+            </button>
+          </div>
+
+          <div class="choice-panel">
+            <div class="choice-box">
+              <h3>Write your WHAT</h3>
+              <p class="input-help">This box finishes the sentence frame: <strong>This essay will...</strong></p>
+
+              <div class="try-card">
+                <p>Choose a verb that tells what your essay is doing. A stronger verb helps the thesis sound more specific.</p>
+                <div class="verb-bank" aria-label="Verb options">
+                  <span class="verb-chip">explain</span>
+                  <span class="verb-chip">examine</span>
+                  <span class="verb-chip">compare</span>
+                  <span class="verb-chip">describe</span>
+                  <span class="verb-chip">outline</span>
+                </div>
+                <label for="whatVerb">Your WHAT</label>
+                <div class="framed-input">
+                  <span class="frame-prefix">This essay will</span>
+                  <textarea class="small-textarea" id="whatVerb" placeholder="examine the training, work, and career outlook for radiology technicians"></textarea>
+                </div>
+                <div class="errorBanner" id="whatVerbWarning">This matches the example too closely. Revise it in your own words before submitting.</div>
+              </div>
+
+              <div class="reflect-box">
+                <p><strong>Before moving on:</strong> Does your verb match what the essay actually does?</p>
+              </div>
+
+              <textarea id="whatOverview" style="display:none" aria-hidden="true"></textarea>
+              <button class="btn use-choice" id="useOverviewBtn" type="button" style="display:none">Use overview</button>
+              <button class="btn use-choice" id="useVerbBtn" type="button" style="display:none">Use this WHAT</button>
+              <span class="selected-note" id="overviewSelected" style="display:none">Selected</span>
+              <span class="selected-note" id="verbSelected" style="display:none">Selected</span>
+
+              <div class="big-warning" id="whatTrickWarning" role="alert">
+                <strong>No first person.</strong>
+                <p>Do not start the thesis with “I will.” This is a research thesis, so use “This essay will...” instead.</p>
+              </div>
+            </div>
+          </div>
+
+          <input id="what" type="hidden" />
+        </div>
+
+        <div class="step-card locked" id="howSection">
+          <p class="step-kicker">Step 3</p>
+          <h2>HOW</h2>
+          <p class="plain-help">Add the 2 or 3 research areas your essay will cover. The box already adds “by.”</p>
+          <div class="mini-example">
+            <span class="label">Sentence pattern</span>
+            <p class="example-text">by explaining [research area 1], [research area 2], and [research area 3].</p>
+          </div>
+          <label for="how">Your HOW</label>
+          <p class="input-help">Choose a starter, then add 2 or 3 research categories your essay actually covers.</p>
+          <div class="starter-buttons" id="howButtons" aria-label="How sentence starters"></div>
+          <div class="framed-input">
+            <span class="frame-prefix">by</span>
+            <textarea id="how" placeholder="explaining training requirements, typical costs, and job outlook"></textarea>
+          </div>
+          <div class="errorBanner" id="howExampleWarning">Do not copy the example. This is cheating. Change the research areas before moving on. Switching the starter word is not enough.</div>
+          <div class="lockBanner" id="howLockMsg">Locked: finish WHAT first.</div>
+        </div>
+
+        <div class="step-card locked" id="whySection">
+          <p class="step-kicker">Step 4</p>
+          <h2>WHY</h2>
+          <p class="plain-help">Explain what the reader will understand. The box already adds “so that.”</p>
+          <div class="mini-example">
+            <span class="label">Sentence pattern</span>
+            <p class="example-text">so that a student can understand [specific decision, requirement, or next step] for [career field].</p>
+          </div>
+          <label for="why">Your WHY</label>
+          <p class="input-help">Be specific. What decision, requirement, cost, training step, or career reality will the reader understand?</p>
+          <div class="framed-input">
+            <span class="frame-prefix">so that</span>
+            <textarea id="why" placeholder="a student can understand which training steps and costs to plan for before entering radiology technology"></textarea>
+          </div>
+          <div class="errorBanner" id="whySpecificWarning">Be more specific. Name what the reader will understand, such as training steps, costs, licensing, transfer requirements, job duties, salary, or job outlook.</div>
+          <div class="errorBanner" id="whyExampleWarning">Do not copy the example. This is cheating. Change the purpose before submitting.</div>
+          <div class="lockBanner" id="whyLockMsg">Locked: finish HOW first.</div>
+        </div>
+
+        <div class="card final-card">
+          <p class="step-kicker">Final sentence</p>
+          <h3>Your thesis</h3>
+          <div class="finalBox" role="region" aria-label="Final thesis preview">
+            <pre id="thesisPreview">Start typing above...</pre>
+          </div>
+          <div class="errorBanner" id="firstPersonWarning">First-person words are not allowed.</div>
+          <div class="errorBanner" id="exampleWarning">Copied example wording is not allowed.</div>
+          <div class="row no-print">
+            <button class="btn primary" id="copyBtn" type="button" disabled>Copy thesis sentence (locked)</button>
+          </div>
+          <details class="no-print">
+            <summary>Why no “I” or “my”?</summary>
+            <p>This thesis is for a research essay. It should sound like an academic overview, not a personal story.</p>
+          </details>
+        </div>
+
+        <section class="card submission-card" aria-label="Canvas submission output">
+          <p class="step-kicker">Finished work</p>
+          <h3>What to submit in Canvas</h3>
+          <p class="plain-help">When your thesis is finished, save this section as a PDF and submit it in Canvas. Google Docs is only for unfinished work.</p>
+          <div class="submission-box" role="region" aria-label="Submission preview">
+            <pre id="submissionPreview">Complete the thesis builder above. Your submission will appear here.</pre>
+          </div>
+          <div class="row no-print">
+            <button class="btn primary" id="copySubmissionBtn" type="button" disabled style="display:none">Copy submission (locked)</button>
+            <button class="btn primary" id="printBtn" type="button" disabled>Save Finished Work as PDF</button>
+            <button class="btn primary save-unfinished-btn" type="button">Save Unfinished Work for Later</button>
+          </div>
+        </section>
+      </section>
+
+      <aside class="card side-card" aria-label="Thesis progress and feedback">
+        <p class="step-kicker">Live check</p>
+        <h3>Your pieces</h3>
+        <div class="stack" aria-label="Thesis pieces">
+          <div class="piece what"><strong>WHAT</strong><p id="whatOut">This essay will ________.</p></div>
+          <div class="piece how"><strong>HOW</strong><p id="howOut">by ______________________________.</p></div>
+          <div class="piece why"><strong>WHY</strong><p id="whyOut">so that ______________________________.</p></div>
+        </div>
+
+        <div class="meter" aria-label="Progress meter">
+          <div class="status">
+            <div><b>Progress</b><br><span id="meterText">Start with WHAT.</span></div>
+            <span class="flag" id="flag">0 / 3 done</span>
+          </div>
+          <div class="bar" aria-hidden="true"><div class="fill" id="fill"></div></div>
+          <div class="hint" id="warnings"><b>Before you submit:</b><br>WHAT, HOW, and WHY are all required.<br>No first person.<br>WHY should be specific.<br>Do not leave the writing-box examples unchanged.</div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+
+  <div class="save-modal hidden" id="saveModal" aria-hidden="true">
+    <div class="save-modal-backdrop" data-close-save-modal></div>
+    <div class="save-modal-card" role="dialog" aria-modal="true" aria-labelledby="saveModalTitle" tabindex="-1">
+      <p class="step-kicker">Save unfinished work</p>
+      <h2 id="saveModalTitle">Now save it in your Google Doc.</h2>
+      <p>Your unfinished work has been copied.</p><ol><li>Go to the Toolkit Work Hub.</li><li>Open your Google Doc Save Space.</li><li>Paste your work there.</li></ol>
+      <div class="modal-actions">
+        <a class="btn primary" href="https://engl101practicepages.github.io/AssignmentWorkHub/">Go to Toolkit Work Hub</a>
+        <button class="btn secondary" type="button" data-close-save-modal>Stay on this page</button>
+      </div>
+      <p class="modal-reminder"><strong>Reminder:</strong> Finished work should be saved as a PDF and submitted in Canvas.</p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Copied!</div>
+
+  <script>
+
+    var HOW_STARTERS = ["outlining", "describing", "explaining", "comparing", "examining"];
+    var VAGUE_WORDS = ["things", "stuff", "a lot", "lots", "many", "good", "bad", "nice", "interesting", "various", "different", "some"];
+    var ARGUMENT_VERBS = ["prove", "argue", "convince", "debate", "fight", "win"];
+    var FIRST_PERSON_WORDS = ["i", "me", "my", "mine", "myself", "we", "us", "our", "ours", "ourselves"];
+    var EXAMPLE_LOCK_PHRASES = [
+      "provide an overview of the path to becoming a dental hygienist",
+      "by explaining the required education licensing process and entry-level job expectations",
+      "training requirements typical costs and job outlook",
+      "so that a student can understand the steps needed to prepare for an entry-level career",
+      "a student can understand what steps to take next",
+      "a student can understand which training steps and costs to plan for before entering radiology technology"
+    ];
+
+    var topicEl = document.getElementById("topic");
+    var whatEl = document.getElementById("what");
+    var whatOverviewEl = document.getElementById("whatOverview");
+    var whatVerbEl = document.getElementById("whatVerb");
+    var whatTrickWarning = document.getElementById("whatTrickWarning");
+    var whatVerbWarning = document.getElementById("whatVerbWarning");
+    var wrongStarterCard = document.getElementById("wrongStarterCard");
+    var rightStarterCard = document.getElementById("rightStarterCard");
+    var useOverviewBtn = document.getElementById("useOverviewBtn");
+    var useVerbBtn = document.getElementById("useVerbBtn");
+    var overviewSelected = document.getElementById("overviewSelected");
+    var verbSelected = document.getElementById("verbSelected");
+    var selectedWhatMode = "verb";
+    var howEl = document.getElementById("how");
+    var whyEl = document.getElementById("why");
+    var whatOut = document.getElementById("whatOut");
+    var howOut = document.getElementById("howOut");
+    var whyOut = document.getElementById("whyOut");
+    var preview = document.getElementById("thesisPreview");
+    var submissionPreview = document.getElementById("submissionPreview");
+    var fill = document.getElementById("fill");
+    var meterText = document.getElementById("meterText");
+    var flag = document.getElementById("flag");
+    var warningsBox = document.getElementById("warnings");
+    var howSection = document.getElementById("howSection");
+    var whySection = document.getElementById("whySection");
+    var howLockMsg = document.getElementById("howLockMsg");
+    var howExampleWarning = document.getElementById("howExampleWarning");
+    var whyLockMsg = document.getElementById("whyLockMsg");
+    var whySpecificWarning = document.getElementById("whySpecificWarning");
+    var whyExampleWarning = document.getElementById("whyExampleWarning");
+    var firstPersonWarning = document.getElementById("firstPersonWarning");
+    var exampleWarning = document.getElementById("exampleWarning");
+    var copyBtn = document.getElementById("copyBtn");
+    var copySubmissionBtn = document.getElementById("copySubmissionBtn");
+    var printBtn = document.getElementById("printBtn");
+    var toast = document.getElementById("toast");
+
+    function cleanSentence(text){
+      var words = String(text || "").split(" ").filter(function(part){ return part.trim() !== ""; });
+      return words.join(" ").trim();
+    }
+
+    function normalizeForCheck(text){
+      return cleanSentence(String(text || "").toLowerCase()).replace(/[.,!?;:]/g, "");
+    }
+
+    function hasText(text){return cleanSentence(text).length > 0;}
+
+    function stripFinalPunctuation(text){
+      var s = cleanSentence(text);
+      while(s.endsWith(".") || s.endsWith("!") || s.endsWith("?")){s = s.slice(0, -1);}
+      return s;
+    }
+
+    function startsWithLower(text, starter){return cleanSentence(text).toLowerCase().startsWith(starter);}
+
+    function getWords(text){
+      var words = [];
+      var current = "";
+      var lower = String(text || "").toLowerCase();
+      for(var i = 0; i < lower.length; i++){
+        var ch = lower.charAt(i);
+        if((ch >= "a" && ch <= "z") || ch === "'") current += ch;
+        else{ if(current){words.push(current); current = "";} }
+      }
+      if(current) words.push(current);
+      return words;
+    }
+
+    function getFirstPersonHits(){
+      var words = getWords([topicEl.value, whatEl.value, howEl.value, whyEl.value].join(" "));
+      var hits = [];
+      words.forEach(function(word){ if(FIRST_PERSON_WORDS.indexOf(word) !== -1 && hits.indexOf(word) === -1) hits.push(word); });
+      return hits;
+    }
+
+    function getExampleHits(){
+      var combined = normalizeForCheck([topicEl.value, whatEl.value, howEl.value, whyEl.value].join(" "));
+      var hits = [];
+      EXAMPLE_LOCK_PHRASES.forEach(function(phrase){
+        var normalized = normalizeForCheck(phrase);
+        if(normalized && combined.indexOf(normalized) !== -1) hits.push(phrase);
+      });
+      return hits;
+    }
+
+    function hasWhatVerbExampleCopy(){
+      var whatText = normalizeForCheck(whatVerbEl.value);
+      var copiedStructure = normalizeForCheck("training work and career outlook");
+      return whatText.indexOf(copiedStructure) !== -1;
+    }
+
+    function hasHowExampleCopy(){
+      var howText = normalizeForCheck(howEl.value);
+      var copiedCategories = normalizeForCheck("training requirements typical costs and job outlook");
+      return howText.indexOf(copiedCategories) !== -1;
+    }
+
+    function hasWhyExampleCopy(){
+      var whyText = normalizeForCheck(whyEl.value);
+      var copiedWhyExample = normalizeForCheck("a student can understand which training steps and costs to plan for before entering radiology technology");
+      return whyText.indexOf(copiedWhyExample) !== -1;
+    }
+
+    function hasVagueWhy(){
+      var whyText = normalizeForCheck(whyEl.value);
+      if(!hasText(whyEl.value)) return false;
+      var vagueWhyPhrases = [
+        "a student can understand what steps to take next",
+        "students can understand what steps to take next",
+        "the reader can understand what steps to take next",
+        "a person can understand what steps to take next",
+        "understand what steps to take next",
+        "learn more about the career",
+        "understand the career better",
+        "know more about the career"
+      ];
+      for(var i = 0; i < vagueWhyPhrases.length; i++){
+        if(whyText.indexOf(normalizeForCheck(vagueWhyPhrases[i])) !== -1) return true;
+      }
+      return false;
+    }
+
+    function removeStarter(text){
+      var cleaned = cleanSentence(text);
+      var lower = cleaned.toLowerCase();
+      var allStarters = HOW_STARTERS.concat(["by ", "i will"]);
+      for(var i = 0; i < allStarters.length; i++){
+        var starter = allStarters[i];
+        if(lower.startsWith(starter)) return cleaned.slice(starter.length).trim();
+      }
+      return cleaned;
+    }
+
+    function showNoFirstPersonWarning(){
+      whatTrickWarning.classList.add("show");
+      showToast("Use 'This essay will,' not 'I will.'");
+      setTimeout(function(){ whatTrickWarning.classList.remove("show"); }, 5200);
+    }
+
+    function showCorrectStarterReminder(){
+      showToast("Good. The builder adds 'This essay will' for you.");
+    }
+
+    function makeStarterButton(label, target, starter, options){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn" + (options && options.trick ? " trick" : "");
+      b.textContent = label;
+      b.addEventListener("click", function(){
+        if(options && options.trick){
+          showNoFirstPersonWarning();
+          return;
+        }
+        var current = removeStarter(target.value);
+        target.value = starter + (current ? " " + current : " ");
+        target.focus();
+        updateAll();
+        saveAll();
+      });
+      return b;
+    }
+
+    function normalizeWhy(text){
+      var y = cleanSentence(text);
+      if(!y) return "";
+      if(startsWithLower(y, "so that ") || startsWithLower(y, "to ") || startsWithLower(y, "for the purpose of ")) return y;
+      return "so that " + y;
+    }
+
+    function buildThesis(what, how, why){
+      if(!hasText(what) && !hasText(how) && !hasText(why)) return "Start typing above...";
+      var w = cleanSentence(what);
+      var h = cleanSentence(how);
+      var y = normalizeWhy(why);
+      if(w && !startsWithLower(w, "this essay will")) w = "This essay will " + w;
+      if(h && !startsWithLower(h, "by ")) h = "by " + h;
+      var parts = [];
+      if(w) parts.push(stripFinalPunctuation(w));
+      if(h) parts.push(stripFinalPunctuation(h));
+      if(y) parts.push(stripFinalPunctuation(y));
+      return parts.join(" ") + ".";
+    }
+
+    function buildSubmission(){
+      var topic = cleanSentence(topicEl.value) || "(not entered yet)";
+      var w = cleanSentence(whatEl.value) || "(not entered yet)";
+      var h = cleanSentence(howEl.value) || "(not entered yet)";
+      var y = normalizeWhy(whyEl.value) || "(not entered yet)";
+      if(w !== "(not entered yet)" && !startsWithLower(w, "this essay will")) w = "This essay will " + w;
+      if(h !== "(not entered yet)" && !startsWithLower(h, "by ")) h = "by " + h;
+      return `Thesis Statement Practice
+
+Topic: ${topic}
+
+WHAT: ${w}
+HOW: ${h}
+WHY: ${y}
+
+Full thesis sentence:
+${buildThesis(whatEl.value, howEl.value, whyEl.value)}`;
+    }
+
+    function showToast(text){
+      toast.textContent = text;
+      toast.classList.add("show");
+      setTimeout(function(){toast.classList.remove("show");}, 1400);
+    }
+
+    function setLocked(el, locked){locked ? el.classList.add("locked") : el.classList.remove("locked");}
+
+    function hasFirstPerson(){return getFirstPersonHits().length > 0;}
+    function hasExampleCopy(){return getExampleHits().length > 0;}
+    function syncSelectedWhat(){
+      selectedWhatMode = "verb";
+      whatEl.value = whatVerbEl.value;
+    }
+
+    function isComplete(){return hasText(whatEl.value) && hasText(howEl.value) && hasText(whyEl.value) && !hasFirstPerson() && !hasExampleCopy() && !hasVagueWhy() && !hasWhyExampleCopy() && !hasWhatVerbExampleCopy();}
+
+    function markProblemFields(){
+      [topicEl, whatOverviewEl, whatVerbEl, howEl, whyEl].forEach(function(field){
+        var text = normalizeForCheck(field.value);
+        var words = getWords(field.value);
+        var problem = false;
+        words.forEach(function(word){ if(FIRST_PERSON_WORDS.indexOf(word) !== -1) problem = true; });
+        EXAMPLE_LOCK_PHRASES.forEach(function(phrase){ if(text.indexOf(normalizeForCheck(phrase)) !== -1) problem = true; });
+        if(field === whatVerbEl && hasWhatVerbExampleCopy()) problem = true;
+        problem ? field.classList.add("field-error") : field.classList.remove("field-error");
+      });
+    }
+
+    function updateLocks(){
+      var whatDone = hasText(whatEl.value);
+      var howDone = hasText(howEl.value);
+      syncSelectedWhat();
+      var firstHits = getFirstPersonHits();
+      var exampleHits = getExampleHits();
+      var blocked = firstHits.length || exampleHits.length;
+      var complete = isComplete();
+
+      setLocked(howSection, !whatDone);
+      howLockMsg.style.display = whatDone ? "none" : "block";
+      howLockMsg.textContent = "Locked: finish WHAT first.";
+
+      var whatVerbCopied = hasWhatVerbExampleCopy();
+      var howExampleCopied = hasHowExampleCopy();
+      var vagueWhy = hasVagueWhy();
+      var whyExampleCopied = hasWhyExampleCopy();
+      whatVerbWarning.style.display = whatVerbCopied ? "block" : "none";
+      howSection.classList.toggle("revision-needed", howExampleCopied);
+      whySection.classList.toggle("revision-needed", vagueWhy || whyExampleCopied);
+      howExampleWarning.style.display = howExampleCopied ? "block" : "none";
+      whySpecificWarning.style.display = vagueWhy ? "block" : "none";
+      whyExampleWarning.style.display = whyExampleCopied ? "block" : "none";
+
+      setLocked(whySection, !(whatDone && howDone) || howExampleCopied);
+      whyLockMsg.style.display = whatDone && howDone && !howExampleCopied ? "none" : "block";
+      whyLockMsg.textContent = howExampleCopied ? "Locked: do not copy the example. This is cheating." : "Locked: finish HOW first.";
+
+      firstPersonWarning.style.display = firstHits.length ? "block" : "none";
+      if(firstHits.length) firstPersonWarning.innerHTML = "Remove first-person words: <b>" + firstHits.join(", ") + "</b>. Use objective academic voice.";
+
+      exampleWarning.style.display = exampleHits.length ? "block" : "none";
+      if(exampleHits.length) exampleWarning.textContent = "Do not copy the example. This is cheating. Revise the example wording, then copy/print will unlock.";
+
+      copyBtn.disabled = !complete;
+      if(copySubmissionBtn) copySubmissionBtn.disabled = !complete;
+      printBtn.disabled = !complete;
+      copyBtn.textContent = complete ? "Copy thesis sentence" : "Copy thesis sentence (locked)";
+      if(copySubmissionBtn) copySubmissionBtn.textContent = complete ? "Copy submission" : "Copy submission (locked)";
+    }
+
+    function findHits(list, text){
+      var lower = String(text || "").toLowerCase();
+      return list.filter(function(item){return lower.indexOf(item) !== -1;});
+    }
+
+    function updateProgress(){
+      var done = 0;
+      var blocked = hasFirstPerson() || hasExampleCopy() || hasVagueWhy() || hasWhyExampleCopy() || hasWhatVerbExampleCopy();
+      if(hasText(whatEl.value)) done++;
+      if(hasText(howEl.value)) done++;
+      if(hasText(whyEl.value)) done++;
+      fill.style.width = blocked ? "0%" : Math.round((done / 3) * 100) + "%";
+      flag.classList.toggle("blocked", blocked);
+      flag.textContent = blocked ? "Revision needed" : done + " / 3 done";
+      if(blocked) meterText.textContent = "Revise the example, first-person wording, or vague WHY.";
+      else if(done === 0) meterText.textContent = "Start with WHAT.";
+      else if(done === 1) meterText.textContent = "Good. HOW is unlocked.";
+      else if(done === 2) meterText.textContent = "Good. WHY is unlocked.";
+      else meterText.textContent = "Complete. Save as PDF.";
+    }
+
+    function updateChecks(){
+      var combined = [topicEl.value, whatEl.value, howEl.value, whyEl.value].join(" ");
+      var vague = Array.from(new Set(findHits(VAGUE_WORDS, combined))).slice(0, 4);
+      var argy = Array.from(new Set(findHits(ARGUMENT_VERBS, combined)));
+      var firstHits = getFirstPersonHits();
+      var exampleHits = getExampleHits();
+      var vagueWhy = hasVagueWhy();
+      var whyExampleCopied = hasWhyExampleCopy();
+      var whatVerbCopied = hasWhatVerbExampleCopy();
+      var tips = [];
+      if(firstHits.length) tips.push("Remove first person: <b>" + firstHits.join(", ") + "</b>.");
+      if(exampleHits.length) tips.push("Do not copy the example. This is cheating. Revise the example wording to unlock submission.");
+      if(whatVerbCopied) tips.push("This matches the example too closely. Revise it in your own words before submitting.");
+      if(vagueWhy) tips.push("Make WHY more specific. Name the decision, requirement, cost, training step, or career reality the reader will understand.");
+      if(whyExampleCopied) tips.push("Do not copy the WHY example. This is cheating. Rewrite the purpose in your own words.");
+      if(vague.length) tips.push("Replace vague words: <b>" + vague.join(", ") + "</b>.");
+      if(argy.length) tips.push("Use overview words, not <b>" + argy.join(", ") + "</b>.");
+      warningsBox.innerHTML = tips.length ? "<b>Fix:</b><br>" + tips.join("<br>") : "<b>Before you submit:</b><br>WHAT, HOW, and WHY are all required.<br>No first person.<br>WHY should be specific.<br>Do not leave the writing-box examples unchanged.";
+    }
+
+    function updateOutputs(){
+      syncSelectedWhat();
+      var w = cleanSentence(whatEl.value);
+      var h = cleanSentence(howEl.value);
+      var y = normalizeWhy(whyEl.value);
+      whatOut.textContent = w ? (startsWithLower(w, "this essay will") ? w : "This essay will " + w) : "This essay will ________.";
+      howOut.textContent = h ? (startsWithLower(h, "by ") ? h : "by " + h) : "by ______________________________.";
+      whyOut.textContent = y || "so that ______________________________.";
+      preview.textContent = buildThesis(whatEl.value, howEl.value, whyEl.value);
+      submissionPreview.textContent = buildSubmission();
+    }
+
+    function updateChoiceUI(){
+      useOverviewBtn.classList.toggle("active", selectedWhatMode === "overview");
+      useVerbBtn.classList.toggle("active", selectedWhatMode === "verb");
+      overviewSelected.classList.toggle("show", selectedWhatMode === "overview");
+      verbSelected.classList.toggle("show", selectedWhatMode === "verb");
+    }
+
+    function updateAll(){syncSelectedWhat(); updateChoiceUI(); markProblemFields(); updateOutputs(); updateLocks(); updateProgress(); updateChecks();}
+
+    function saveAll(){
+      try{localStorage.setItem("thesisStatementBuilder_v4", JSON.stringify({topic:topicEl.value, what:whatEl.value, whatOverview:"", whatVerb:whatVerbEl.value, selectedWhatMode:"verb", how:howEl.value, why:whyEl.value}));}catch(e){}
+    }
+
+    function loadAll(){
+      try{
+        var saved = localStorage.getItem("thesisStatementBuilder_v4") || localStorage.getItem("thesisStatementBuilder_v3") || localStorage.getItem("thesisStatementBuilder_v2") || localStorage.getItem("thesisPyramid_game_v1");
+        if(!saved) return;
+        var data = JSON.parse(saved);
+        topicEl.value = data.topic || "";
+        whatOverviewEl.value = "";
+        whatVerbEl.value = data.whatVerb || data.what || data.whatOverview || "";
+        selectedWhatMode = "verb";
+        syncSelectedWhat();
+        howEl.value = data.how || "";
+        whyEl.value = data.why || "";
+      }catch(e){}
+    }
+
+    function copyText(text, successMessage){
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(function(){showToast(successMessage || "Copied!");}).catch(function(){fallbackCopy(text, successMessage);});
+      }else fallbackCopy(text, successMessage);
+    }
+
+    function fallbackCopy(text, successMessage){
+      var temp = document.createElement("textarea");
+      temp.value = text;
+      document.body.appendChild(temp);
+      temp.select();
+      try{document.execCommand("copy"); showToast(successMessage || "Copied!");}
+      catch(e){showToast("Copy failed. Select and copy manually.");}
+      temp.remove();
+    }
+
+
+    var saveModal = document.getElementById("saveModal");
+    var lastFocusedBeforeSaveModal = null;
+
+    function buildUnfinishedWorkText(){
+      return `Thesis Statement Builder — Unfinished Work
+
+Reminder: Google Docs is for unfinished work you need to return to later. Finished work should be saved as a PDF and submitted in Canvas.
+
+Topic:
+${cleanSentence(topicEl.value) || "(not entered yet)"}
+
+WHAT:
+${cleanSentence(whatVerbEl.value) || "(not entered yet)"}
+
+HOW:
+${cleanSentence(howEl.value) || "(not entered yet)"}
+
+WHY:
+${cleanSentence(whyEl.value) || "(not entered yet)"}
+
+Current full thesis sentence:
+${buildThesis(whatEl.value, howEl.value, whyEl.value)}`;
+    }
+
+    function openSaveModal(){
+      lastFocusedBeforeSaveModal = document.activeElement;
+      saveModal.classList.remove("hidden");
+      saveModal.setAttribute("aria-hidden", "false");
+      var card = saveModal.querySelector(".save-modal-card");
+      if(card) card.focus();
+    }
+
+    function closeSaveModal(){
+      saveModal.classList.add("hidden");
+      saveModal.setAttribute("aria-hidden", "true");
+      if(lastFocusedBeforeSaveModal && lastFocusedBeforeSaveModal.focus) lastFocusedBeforeSaveModal.focus();
+    }
+
+    function saveUnfinishedWork(){
+      saveAll();
+      copyText(buildUnfinishedWorkText(), "Unfinished work copied!");
+      openSaveModal();
+    }
+
+    document.querySelectorAll(".save-unfinished-btn").forEach(function(btn){
+      btn.addEventListener("click", saveUnfinishedWork);
+    });
+
+    document.querySelectorAll("[data-close-save-modal]").forEach(function(btn){
+      btn.addEventListener("click", closeSaveModal);
+    });
+
+    document.addEventListener("keydown", function(e){
+      if(e.key === "Escape" && !saveModal.classList.contains("hidden")) closeSaveModal();
+    });
+
+
+    var restoreSavedBtn = document.getElementById("restoreSavedBtn");
+    if(restoreSavedBtn){
+      restoreSavedBtn.addEventListener("click", function(){
+        loadAll();
+        updateAll();
+        showToast("Saved work restored");
+      });
+    }
+
+    HOW_STARTERS.forEach(function(starter){
+      document.getElementById("howButtons").appendChild(makeStarterButton(starter, howEl, starter));
+    });
+
+    wrongStarterCard.addEventListener("click", showNoFirstPersonWarning);
+    rightStarterCard.addEventListener("click", showCorrectStarterReminder);
+
+    copyBtn.addEventListener("click", function(){copyText(buildThesis(whatEl.value, howEl.value, whyEl.value), "Thesis copied!");});
+    if(copySubmissionBtn){copySubmissionBtn.addEventListener("click", function(){copyText(buildSubmission(), "Submission copied!");});}
+    printBtn.addEventListener("click", function(){window.print();});
+
+
+    useOverviewBtn.addEventListener("click", function(){
+      selectedWhatMode = "overview";
+      updateAll();
+      saveAll();
+      showToast("Overview WHAT selected");
+    });
+
+    useVerbBtn.addEventListener("click", function(){
+      selectedWhatMode = "verb";
+      updateAll();
+      saveAll();
+      showToast("Stronger verb WHAT selected");
+    });
+
+    [topicEl, whatOverviewEl, whatVerbEl, howEl, whyEl].forEach(function(el){
+      el.addEventListener("input", function(){updateAll(); saveAll();});
+    });
+
+    loadAll();
+    updateAll();
+  </script>
+</body>
+</html>
